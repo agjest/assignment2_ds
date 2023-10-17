@@ -7,6 +7,7 @@
 *.pptx
 *.tex
 *.md
+
 .Rhistory
 .Rapp.history
 
