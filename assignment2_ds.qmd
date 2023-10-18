@@ -299,7 +299,7 @@ bmi_inntekt_sex <- hoydeNormInc |>
 ```
 
 ```{r}
-renset_dataset2 <- na.omit(bmi_inntekt_sex)
+ renset_dataset2 <- na.omit(bmi_inntekt_sex)
 ```
 
 ```{r}
@@ -372,10 +372,90 @@ ggplot(female_data, aes(x = bmi, y = income)) +
 ```
 
 ## 
-
 Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
 
-## 
+```{r}
+bmi_inntekt_sex_married <- hoydeNormInc |> 
+  select(sex, income, bmi, married)
+```
+
+```{r}
+renset_dataset3 <- na.omit(bmi_inntekt_sex_married)
+```
+
+```{r}
+# Opprett et scatterplot
+ggplot(bmi_inntekt_sex_married, aes(x = bmi, y = income, color = sex, shape = married)) +
+  geom_point() +
+  labs(title = "Sammenheng mellom BMI og Inntekt etter Kjønn og Sivilstand") +
+  scale_color_manual(values = c("male" = "blue", "female" = "red")) +
+  scale_shape_manual(values = c("married" = 15, "not married" = 1))
+
+```
+
+```{r}
+
+# Plott for gifte (married)
+plot_married <- ggplot(filter(bmi_inntekt_sex_married, married == "married"), aes(x = bmi, y = income, color = sex)) +
+  geom_point() +
+  labs(title = " Gifte (Married)")
+
+# Plott for ugifte (not married)
+plot_not_married <- ggplot(filter(bmi_inntekt_sex_married, married == "not married"), aes(x = bmi, y = income, color = sex)) +
+  geom_point() +
+  labs(title = " Ugifte (Not Married)")
+
+# Kombiner plottene
+library(gridExtra)
+grid.arrange(plot_married, plot_not_married, ncol = 2)
+
+```
+
+```{r}
+# Filtrer datasettet for menn og kvinner
+married_data <- filter(renset_dataset3, married == "married")
+notmarried_data <- filter(renset_dataset3, married == "not married")
+
+# Beregn korrelasjonen mellom BMI og inntekt for married
+correlation_married <- cor(married_data$bmi, married_data$income, use = "complete.obs")
+cat("Pearson correlation between BMI and Income for married:", correlation_married, "\n")
+
+# Beregn korrelasjonen mellom BMI og inntekt for not married 
+correlation_notmarried <- cor(notmarried_data$bmi, notmarried_data$income, use = "complete.obs")
+cat("Pearson correlation between BMI and Income for not married:", correlation_notmarried)
+```
+
+1.  **Pearson-korrelasjon mellom BMI og Income for married (gifte): -0.0563821**
+
+    -   Denne verdien (-0.0563821) indikerer en svak negativ korrelasjon mellom BMI og inntekt blant gifte individer.
+        Med andre ord, det er en liten tendens til at gifte personer med høyere BMI-verdier har litt lavere inntekt, og gifte personer med lavere BMI-verdier har litt høyere inntekt.
+        Den negative korrelasjonen tyder på en motsatt trend, men sammenhengen er svak.
+
+2.  **Pearson-korrelasjon mellom BMI og Income for not married (ugifte): -0.03155596**
+
+    -   Denne verdien (-0.03155596) indikerer også en svak negativ korrelasjon mellom BMI og inntekt blant ugifte individer.
+        På samme måte som for gifte, antyder dette at ugifte personer med høyere BMI-verdier har litt lavere inntekt, og ugifte personer med lavere BMI-verdier har litt høyere inntekt.
+        Igjen er sammenhengen svak.
+
+Sammenfattende viser resultatene at det er en svak tendens til at både gifte og ugifte individer med høyere BMI-verdier har litt lavere inntekt, men sammenhengen er ikke spesielt sterk.
+Dette betyr at BMI alene ikke er en sterk prediktor for inntekt, uavhengig av sivilstand.
+Andre faktorer kan spille en viktigere rolle i å påvirke inntekten til både gifte og ugifte personer i datasettet ditt.
+
+```{r}
+# Grupper data etter kjønn og beregn statistikk
+summary_stats3 <- renset_dataset3 %>%
+  group_by(married, sex) %>%
+  summarize(
+    Mean_BMI = mean(bmi),
+    Mean_Income = mean(income),
+  )
+
+# Vis resultatene
+print(summary_stats3)
+```
+
+Menn som er gift har høyere inntekt enn men som ikke er gift men har også høyre BMI enn de som ikke er gift.
+Kvinner som er gift har også høyere inntekt enn kvinner som ikke er gift men kvinner som er gift har lavere BMI enn kvinner som ikke er gift.
 
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
 
