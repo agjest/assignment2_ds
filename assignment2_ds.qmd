@@ -4,4 +4,252 @@ format: html
 editor: visual
 ---
 
-## 
+```{r}
+#| label: setup
+#| echo: false
+#| iutput: false
+#| message: false
+library(tidyverse)
+library(vtable)
+```
+
+# **Er det BMI som bestemmer inntekt?**
+
+Datasettet vi har brukt gjennom oppgaven er kalt *heights* og er en del av pakken modelr, Wickham ([2020](https://msb105.netlify.app/assignments/h23/ass2/ass2-h23#ref-modelr)), som er en utvidelspakke for statistikksystemet R, R Core Team ([2021](https://msb105.netlify.app/assignments/h23/ass2/ass2-h23#ref-Rcore)).
+
+Følgende «chunk» er kode som samtlige grupper bør kjøre rett etter setup chunk-en slik at vi jobber med samme data og har samme variabelnavn.
+
+```{r}
+hoyde <- modelr::heights
+
+hoyde <- hoyde %>% 
+  mutate(
+    bmi = weight * 0.4536/(height * 2.54/100)^2,
+    married = fct_collapse(
+      .f = marital,
+      married = "married",
+      other_level = "not married"
+    ),
+    edu_fac = cut(
+      x = education,
+      breaks = c(0, 12, 14, 16, 21),
+      labels = c("not_hs", "not_cc", "not_col", "col_plus"),
+      right = FALSE
+    )
+  ) |> 
+  # reorganiserer data s.a. de fire faktor-variablerne kommer
+  # lengst til høyre
+  select(income:age, education:bmi, everything()) |>
+  # Dropper marital og education siden disse ikke skal brukes
+  select(-education, -marital)
+
+# Inntekt lik 0
+hoydeZeroInc <- hoyde |> 
+  filter(income == 0)
+# «Normal» inntekt
+hoydeNormInc <- hoyde |> 
+  filter(income > 0 & income < 343830)
+hoydeHighInc <- hoyde |> 
+  filter(income == 343830)
+```
+
+```{r}
+hoyde <- modelr::heights
+```
+
+```{r}
+hoyde |>  st()
+```
+
+Kommenter fra datasettet.
+
+Videre bruker mutate for å lage en variabel som forteller oss BMI.
+
+```{r}
+hoyde <- hoyde %>% 
+  mutate(
+    bmi = weight * 0.4536 / (height * 2.54 / 100)^2,
+    married = fct_collapse(
+      .f = marital,
+      married = "married",
+      other_level = "not married"
+    ))
+```
+
+Videre forenkler vi education slik at vi skiller mellom kategorier Not High School Exam (not_hs), Not Community College (not_cc), Not College (not_col) og 4 years College or more (col_plus).
+
+```{r}
+edu_fac = cut(
+      x = education,
+      breaks = c(0, 12, 14, 16, 21),
+      labels = c("not_hs", "not_cc", 
+                    "not_col", "col_plus"),
+      right = FALSE
+    )
+  )
+```
+
+```{r}
+  select(income:age, education:bmi, everything())
+```
+
+```{r}
+  select(-education, -marital)
+```
+
+```{r}
+hoyde |> vt(missing = TRUE)
+```
+
+Datasettet Høyde skal videre deles inn i tre; hoyde_inc_zero, hoyde_inc_norm og hoyde_inc_high.
+
+```{r}
+# Inntekt lik 0
+hoydeZeroInc <- hoyde |> 
+  filter(income == 0)
+# «Normal» inntekt
+hoydeNormInc <- hoyde |> 
+  filter(income > 0 & income < 343830)
+# Høy inntekt
+hoydeHighInc <- hoyde |> 
+  filter(income == 343830)
+```
+
+```{r}
+hoydeZeroInc |> st()
+```
+
+```{r}
+hoydeZeroInc |> vt()
+```
+
+```{r}
+hoydeNormInc |> st()
+```
+
+```{r}
+hoydeNormInc |> vt()
+```
+
+```{r}
+hoydeHighInc |> st()
+```
+
+```{r}
+hoydeHighInc |> vt()
+```
+
+## Scatter plot for høyde og inntekt
+
+```{r}
+hoyde  |> 
+  ggplot(
+  mapping = aes(
+    x = height,
+    y = income
+    )
+  ) + 
+  geom_jitter(
+    size = 1,
+    alpha = 0.40
+    ) +
+  geom_smooth(
+    formula = y ~ x,
+    method = "lm",
+    colour = "black",
+    lwd = 0.75,
+    se = FALSE
+    )
+```
+
+```{r}
+hoydeNormInc  |> 
+  ggplot(
+  mapping = aes(
+    x = height,
+    y = income
+    )
+  ) + 
+  geom_jitter(
+    size = 1,
+    alpha = 0.40
+    ) +
+  geom_smooth(
+    formula = y ~ x,
+    method = "lm",
+    colour = "black",
+    lwd = 0.75,
+    se = FALSE
+    )
+```
+
+## Histogram for to subsets
+
+```{r}
+meanHeightMale <- hoyde |> 
+  filter(sex == 'male') %>% 
+  select(height) |> 
+  # konverterer en tibble med 3402 rekker og 1 kolonne
+  # til en vektor med 3402 elementer siden mean() forlanger en
+  # vektor som input
+  pull() |> 
+  # finner gjennomsnittet av verdiene i vektoren
+  mean()
+
+meanHeightFemale <- hoyde |> 
+  filter(sex == 'female') %>% 
+  select(height) |> 
+  pull() |> 
+  mean()
+
+# standard deviation
+sdHeightMale <- hoyde |> 
+  filter(sex == 'male') |> 
+  select(height) |> 
+  pull() |> 
+  sd()
+
+sdHeightFemale <- hoyde |>
+  filter(sex == 'female') |>
+  select(height) |>
+  pull() |> 
+  sd()
+```
+
+```{r}
+hoyde %>%
+  ggplot() +
+  ### male ###
+  geom_histogram(
+    data = filter(hoyde, sex == "male"),
+    mapping = aes(x = height, y = after_stat(density)),
+    binwidth = 1, alpha = 0.3, colour = 'grey40', fill = 'grey40'
+    ) + 
+  geom_vline(
+    xintercept = meanHeightMale,
+    colour = 'grey40', lwd = 0.75, linetype = 3
+    ) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = meanHeightMale, sd = sdHeightMale),
+    colour = 'grey40'
+    ) +
+  # female
+  geom_histogram(
+    data = filter(hoyde, sex == "female"),
+    mapping = aes(x = height, y = after_stat(density)),
+    binwidth = 1, alpha = 0.7, colour = 'black', fill = 'grey40'
+    ) +
+  stat_function(
+    fun = dnorm, args = list(mean = meanHeightFemale, sd = sdHeightFemale),
+    colour = 'black'
+    ) +
+  geom_vline(
+    xintercept = meanHeightFemale, colour = 'grey40', lwd = 0.75, linetype = 3
+    ) 
+```
+
+```{r}
+#| echo: false
+# siste
+```
