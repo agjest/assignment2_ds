@@ -272,6 +272,16 @@ Videre kan vi se på inntekten.
 Gjennomsnittlig inntekt for menn ligger noe høyere enn kvinner, herav 54280 og 39401.
 HVA SIER DETTE OSS?
 
+## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
+
+## 
+
+## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
+
+## Resultater/konklusjon
+
+## References 
+
 ```{r}
 #| echo: false
 # siste
