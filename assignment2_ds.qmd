@@ -53,6 +53,7 @@ hoydeHighInc <- hoyde |>
   filter(income == 343830)
 ```
 
+<<<<<<< HEAD
 ```{r}
 hoyde <- modelr::heights
 ```
@@ -114,6 +115,9 @@ hoydeNormInc <- hoyde |>
 hoydeHighInc <- hoyde |> 
   filter(income == 343830)
 ```
+=======
+## Tre nye datasett
+>>>>>>> 15839b65ec3c2b9c376653e2a4b9c072ee720d25
 
 ```{r}
 hoydeZeroInc |> st()
@@ -248,6 +252,99 @@ hoyde %>%
     xintercept = meanHeightFemale, colour = 'grey40', lwd = 0.75, linetype = 3
     ) 
 ```
+
+## Gruppe 5: Sammenheng mellom bmi inntekt
+
+Først skal vi se på sammenhengen mellom bmi og inntekt.
+
+Da
+
+```{r}
+bmi_inntekt <- hoydeNormInc |> 
+  select(income, bmi)
+```
+
+```{r}
+ggplot(bmi_inntekt, aes(x = bmi, y = income)) +
+  geom_point() + 
+  labs(title = "Scatterplot av sammenhengen mellom BMI og inntekt" 
+       )
+```
+
+Kommentar: Utifra datasettet som tar for seg inntekt og bmi får vi et raskt overblikk over de som skiller seg ut.
+Her ser vi at jo høyere BMI desto lavere inntekt.
+Dette er et datasett med ekstremt mange observasjoner og vi vil nå filtrere ut for å få et større bilde av hvordan BMI og inntekt faktisk henger sammen.
+
+Vi øsnker å se sammenhengen, herav om det er korrelasjon
+
+```{r}
+#renser datasettet for NA verdier
+renset_dataset <- na.omit(bmi_inntekt)
+```
+
+```{r}
+correlation <- cor(hoydeNormInc$bmi, hoydeNormInc$income, use = "complete.obs")
+cat("Pearson-korrelasjon mellom BMI og inntekt:", correlation)
+```
+
+Kommentar:
+Verdien -0,05105 indikerer en svak negativ korrelasjon.
+Dette betyr at når "bmi" øker, har "income" en tendens til å være litt lavere, og når "bmi" reduseres, har "income" en tendens til å være litt høyere.
+Imidlertid er korrelasjonen så svak at det er vanskelig å trekke sterke konklusjoner basert bare på denne verdien.
+
+For å få en dypere innsikt i sammenhengen mellom disse variablene og eventuelle underliggende faktorer, vil vi utføre ytterligere analyse med å trekke inn kjønn, gift/ugift og utdanning.
+
+## Sammenheng bmi og inntektsforskjell mellom menn/kvinner
+
+```{r}
+bmi_inntekt_sex <- hoydeNormInc |> 
+  select(sex, income, bmi,)
+```
+
+```{r}
+renset_dataset2 <- na.omit(bmi_inntekt_sex)
+```
+
+```{r}
+ggplot(bmi_inntekt_sex, aes(x = bmi, y = income, color = sex)) +
+  geom_point() + 
+  labs(title = "Scatterplot av sammenhengen mellom BMI og inntekt" 
+       )
+```
+
+Videre lager vi to datasett, ett for kvinner og ett for menn
+
+```{r}
+menn <- filter(renset_dataset2, sex == "male")
+kvinner <- filter(renset_dataset2, sex == "female")
+```
+
+```{r}
+menn_summary <- summarize(menn, Avg_BMI = mean(bmi), Avg_Income = mean(income))
+kvinner_summary <- summarize(kvinner, Avg_BMI = mean(bmi), Avg_Income = mean(income))
+```
+
+```{r}
+print(menn_summary) 
+print(kvinner_summary)
+```
+
+Som vi ser er average på kvinner og menn sin bmi nokså lik.
+I datasettet vårt har vi 2520 observasjoner av menn og 2534 observasjoner av kvinner som vil si at det er innhentet nokså lik data på kjønnene noe som gjør tallene vi får realistiske.
+
+Videre kan vi se på inntekten.
+Gjennomsnittlig inntekt for menn ligger noe høyere enn kvinner, herav 54280 og 39401.
+HVA SIER DETTE OSS?
+
+## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
+
+## 
+
+## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
+
+## Resultater/konklusjon
+
+## References 
 
 ```{r}
 #| echo: false
