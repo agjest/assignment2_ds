@@ -372,7 +372,8 @@ ggplot(female_data, aes(x = bmi, y = income)) +
 ```
 
 ## 
-Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
+
+## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
 
 ```{r}
 bmi_inntekt_sex_married <- hoydeNormInc |> 
@@ -427,15 +428,11 @@ cat("Pearson correlation between BMI and Income for not married:", correlation_n
 
 1.  **Pearson-korrelasjon mellom BMI og Income for married (gifte): -0.0563821**
 
-    -   Denne verdien (-0.0563821) indikerer en svak negativ korrelasjon mellom BMI og inntekt blant gifte individer.
-        Med andre ord, det er en liten tendens til at gifte personer med høyere BMI-verdier har litt lavere inntekt, og gifte personer med lavere BMI-verdier har litt høyere inntekt.
-        Den negative korrelasjonen tyder på en motsatt trend, men sammenhengen er svak.
+    -   Denne verdien (-0.0563821) indikerer en svak negativ korrelasjon mellom BMI og inntekt blant gifte individer. Med andre ord, det er en liten tendens til at gifte personer med høyere BMI-verdier har litt lavere inntekt, og gifte personer med lavere BMI-verdier har litt høyere inntekt. Den negative korrelasjonen tyder på en motsatt trend, men sammenhengen er svak.
 
 2.  **Pearson-korrelasjon mellom BMI og Income for not married (ugifte): -0.03155596**
 
-    -   Denne verdien (-0.03155596) indikerer også en svak negativ korrelasjon mellom BMI og inntekt blant ugifte individer.
-        På samme måte som for gifte, antyder dette at ugifte personer med høyere BMI-verdier har litt lavere inntekt, og ugifte personer med lavere BMI-verdier har litt høyere inntekt.
-        Igjen er sammenhengen svak.
+    -   Denne verdien (-0.03155596) indikerer også en svak negativ korrelasjon mellom BMI og inntekt blant ugifte individer. På samme måte som for gifte, antyder dette at ugifte personer med høyere BMI-verdier har litt lavere inntekt, og ugifte personer med lavere BMI-verdier har litt høyere inntekt. Igjen er sammenhengen svak.
 
 Sammenfattende viser resultatene at det er en svak tendens til at både gifte og ugifte individer med høyere BMI-verdier har litt lavere inntekt, men sammenhengen er ikke spesielt sterk.
 Dette betyr at BMI alene ikke er en sterk prediktor for inntekt, uavhengig av sivilstand.
@@ -458,6 +455,92 @@ Menn som er gift har høyere inntekt enn men som ikke er gift men har også høy
 Kvinner som er gift har også høyere inntekt enn kvinner som ikke er gift men kvinner som er gift har lavere BMI enn kvinner som ikke er gift.
 
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
+
+```{r}
+bmi_inntekt_sex_edufac <- hoydeNormInc |> 
+  select(sex, income, bmi, edu_fac)
+```
+
+```{r}
+renset_dataset4 <- na.omit(bmi_inntekt_sex_edufac)
+```
+
+```{r}
+# Opprett et scatterplot
+ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, shape = edu_fac)) +
+  geom_point() +
+  labs(title = "Sammenheng mellom BMI og Inntekt etter Kjønn og Utdanningsnivå") +
+  scale_color_manual(values = c("male" = "blue", "female" = "red")) +
+  scale_shape_manual(values = c("not_cc" = 15, "not_hs" = 1, "not_col" = 8, "col_plus" = 16))
+```
+
+```{r}
+# Grupper data etter kjønn og beregn statistikk
+summary_stats4 <- renset_dataset4 %>%
+  group_by(edu_fac, sex) %>%
+  summarize(
+    Mean_BMI = mean(bmi),
+    Mean_Income = mean(income),
+  )
+
+# Vis resultatene
+print(summary_stats4)
+```
+
+Som vi kan lese av tabellen ser man at man som både mann og kvinne får høyere lønn jo mer utdannning man har.
+Menn får fortsatt høyere lønn enn kvinner på bakgrunn avutdanning.
+Gjennomsnittlig BMI ligger jevnt som tidligere, bortsett fra at de både menn og kvinner som har 4år + med utdanning har lavere BMI enn de andre med lavere utdanning.
+
+```{r}
+# For hver utdanningskategori
+edu_levels <- c("not_hs", "not_cc", "not_col", "col_plus")
+
+for (edu_level in edu_levels) {
+  subset_data <- subset(renset_dataset4, edu_fac == edu_level)  # Filtrer data for den aktuelle utdanningskategorien
+  correlation <- cor(subset_data$bmi, subset_data$income, use = "complete.obs")  # Beregn Pearson-korrelasjon
+  cat("Pearson correlation between BMI and Income for", edu_level, ":", correlation, "\n")
+}
+```
+
+Pearson correlation between BMI and Income for not_hs : 0.06099851
+
+Dette indikerer en svak positiv korrelasjon mellom BMI og inntekt blant de som ikke har fullført videregående skole (not_hs).
+Med andre ord, de med høyere BMI-verdier har litt høyere inntekt, og de med lavere BMI-verdier har litt lavere inntekt.
+Sammenhengen er svak, men positiv.
+
+Pearson correlation between BMI and Income for not_cc : 0.04919144
+
+Dette indikerer også en svak positiv korrelasjon mellom BMI og inntekt blant de som ikke har fullført college på lavere nivå (not_cc).
+Igjen, de med høyere BMI-verdier har litt høyere inntekt, og de med lavere BMI-verdier har litt lavere inntekt.
+Sammenhengen er svak, men positiv.
+
+Pearson correlation between BMI and Income for not_col : -0.04677233
+
+Denne korrelasjonen er svak og negativ, noe som betyr at de som ikke har fullført college (not_col) og har høyere BMI-verdier, har litt lavere inntekt, mens de med lavere BMI-verdier har litt høyere inntekt.
+Sammenhengen er svak og i motsatt retning.
+
+Pearson correlation between BMI and Income for col_plus : -0.1252669
+
+Denne korrelasjonen er også svak, men mer negativ enn de tidligere.
+Dette indikerer at de med høyere BMI-verdier blant de som har fullført college på høyere nivå (col_plus) har betydelig lavere inntekt, og de med lavere BMI-verdier har litt høyere inntekt.
+Sammenhengen er svak og negativ.
+
+Sammenfattende viser resultatene at sammenhengen mellom BMI og inntekt varierer basert på utdanningsnivå.
+For de med lavere utdanning (not_hs og not_cc), er det en svak positiv sammenheng.
+For de som ikke har fullført college (not_col), er det en svak negativ sammenheng, og for de med høyere collegeutdanning (col_plus), er sammenhengen mer negativ.
+Det er viktig å merke seg at alle disse sammenhengene er svake, noe som betyr at andre faktorer kan spille en betydelig rolle i å påvirke inntektene.
+
+```{r}
+# Opprett separate scatterplott for hver utdanningskategori
+scatterplots6 <- ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, shape = edu_fac)) +
+  geom_point() +
+  facet_wrap(~edu_fac) +
+  labs(title = "Sammenheng mellom BMI og Inntekt etter Utdanningsnivå") +
+  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
+  scale_shape_manual(values = c("not_hs" = 15, "not_cc" = 1, "not_col" = 8, "col_plus" = 16))
+
+print(scatterplots6)
+```
 
 ## Resultater/konklusjon
 
