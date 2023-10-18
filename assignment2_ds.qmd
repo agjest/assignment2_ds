@@ -65,55 +65,9 @@ Kommenter fra datasettet.
 
 Videre bruker mutate for å lage en variabel som forteller oss BMI.
 
-```{r}
-hoyde <- hoyde %>% 
-  mutate(
-    bmi = weight * 0.4536 / (height * 2.54 / 100)^2,
-    married = fct_collapse(
-      .f = marital,
-      married = "married",
-      other_level = "not married"
-    ))
-```
-
 Videre forenkler vi education slik at vi skiller mellom kategorier Not High School Exam (not_hs), Not Community College (not_cc), Not College (not_col) og 4 years College or more (col_plus).
 
-```{r}
-edu_fac = cut(
-      x = education,
-      breaks = c(0, 12, 14, 16, 21),
-      labels = c("not_hs", "not_cc", 
-                    "not_col", "col_plus"),
-      right = FALSE
-    )
-  )
-```
-
-```{r}
-  select(income:age, education:bmi, everything())
-```
-
-```{r}
-  select(-education, -marital)
-```
-
-```{r}
-hoyde |> vt(missing = TRUE)
-```
-
 Datasettet Høyde skal videre deles inn i tre; hoyde_inc_zero, hoyde_inc_norm og hoyde_inc_high.
-
-```{r}
-# Inntekt lik 0
-hoydeZeroInc <- hoyde |> 
-  filter(income == 0)
-# «Normal» inntekt
-hoydeNormInc <- hoyde |> 
-  filter(income > 0 & income < 343830)
-# Høy inntekt
-hoydeHighInc <- hoyde |> 
-  filter(income == 343830)
-```
 
 ## Tre nye datasett
 
