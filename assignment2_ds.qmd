@@ -209,9 +209,10 @@ hoyde %>%
 
 Først skal vi se på sammenhengen mellom bmi og inntekt.
 
-Da
+Datasettet som blir brukt i oppgaven er heights.
 
 ```{r}
+#lager en tabell som kun viser variablene inntekt og bmi
 bmi_inntekt <- hoydeNormInc |> 
   select(income, bmi)
 ```
@@ -247,12 +248,16 @@ For å få en dypere innsikt i sammenhengen mellom disse variablene og eventuell
 
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner
 
+Videre skal vi undersøke hvordan sammenhengen er mellom bmi og inntekt mellom menn og kvinner.
+
 ```{r}
+#lager en tabll som har med variablene kjønn, inntekt og bmi
 bmi_inntekt_sex <- hoydeNormInc |> 
   select(sex, income, bmi,)
 ```
 
 ```{r}
+#renser datasettet for NA verdier
  renset_dataset2 <- na.omit(bmi_inntekt_sex)
 ```
 
@@ -290,15 +295,15 @@ I følge "AARTIKKEL" klassifiseres normalvekt med en BMI mellom 18,5-24,9, som v
 ```{r}
 library(dplyr)
 
-# Filtrer datasettet for menn og kvinner
+#Filtrer datasettet for menn og kvinner
 male_data <- filter(renset_dataset2, sex == "male")
 female_data <- filter(renset_dataset2, sex == "female")
 
-# Beregn korrelasjonen mellom BMI og inntekt for menn
+#Beregn korrelasjonen mellom BMI og inntekt for menn
 correlation_male <- cor(male_data$bmi, male_data$income, use = "complete.obs")
 cat("Pearson correlation between BMI and Income for Men:", correlation_male, "\n")
 
-# Beregn korrelasjonen mellom BMI og inntekt for kvinner
+#Beregner korrelasjonen mellom BMI og inntekt for kvinner
 correlation_female <- cor(female_data$bmi, female_data$income, use = "complete.obs")
 cat("Pearson correlation between BMI and Income for Women:", correlation_female)
 
@@ -313,12 +318,12 @@ Det kan være andre faktorer som påvirker BMI og inntekt i tillegg til kjønn, 
 
 ```{r}
 
-# Scatterplot for sammenhengen mellom BMI og inntekt for menn
+#Scatterplot for sammenhengen mellom BMI og inntekt for menn
 ggplot(male_data, aes(x = bmi, y = income)) +
   geom_point() +
   labs(title = "Sammenheng mellom BMI og Inntekt for Menn")
 
-# Scatterplot for sammenhengen mellom BMI og inntekt for kvinner
+#Scatterplot for sammenhengen mellom BMI og inntekt for kvinner
 ggplot(female_data, aes(x = bmi, y = income)) +
   geom_point() +
   labs(title = "Sammenheng mellom BMI og Inntekt for Kvinner")
