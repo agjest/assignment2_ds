@@ -212,8 +212,9 @@ bmi_inntekt <- hoydeNormInc |>
 ```{r}
 ggplot(bmi_inntekt, aes(x = bmi, y = income)) +
   geom_point() + 
-  labs(title = "Scatterplot av sammenhengen mellom BMI og inntekt" 
-       )
+  geom_smooth(method = "auto") + # Legger til geom_smooth
+  labs(title = "Scatterplot av sammenhengen mellom BMI og inntekt")
+
 ```
 
 Kommentar: Utifra datasettet som tar for seg inntekt og bmi får vi et raskt overblikk over de som skiller seg ut.
@@ -492,6 +493,104 @@ scatterplots6 <- ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, s
 
 print(scatterplots6)
 ```
+
+## HøydeHighInc og HøydeZeroInc
+
+Fordeling mellom kvinner og kjønn i datasettet HøydeHighInc
+
+```{r}
+# Telle antall kvinner
+antall_kvinner <- sum(hoydeHighInc$sex == "female")
+
+# Telle antall menn
+antall_menn <- sum(hoydeHighInc$sex == "male")
+
+#Resultatene
+cat("Antall kvinner:", antall_kvinner, "\n")
+cat("Antall menn:", antall_menn, "\n")
+```
+
+```{r}
+# Telle antall kvinner og menn
+antall_kjonn <- table(hoydeHighInc$sex)
+
+# Konverterer resultatet til et data.frame
+kjonn_data <- data.frame(Kjonn = names(antall_kjonn), Antall = as.numeric(antall_kjonn))
+
+# Opprett barplot
+ggplot(kjonn_data, aes(x = Kjonn, y = Antall, fill = Kjonn)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Fordeling av kvinner og menn i datasettet") +
+  xlab("Kjønn") +
+  ylab("Antall") +
+  scale_fill_manual(values = c("female" = "blue", "male" = "red"))
+```
+
+Som vi ser er det betydelig mange flere menn enn kvinner som går under datasettet HøydeHighInc, herav 12 kvinner og 131 menn.
+
+HøydeZeroInc
+
+```{r}
+# Telle antall kvinner
+antall_kvinner <- sum(hoydeZeroInc$sex == "female")
+
+# Telle antall menn
+antall_menn <- sum(hoydeZeroInc$sex == "male")
+
+#Resultatene
+cat("Antall kvinner:", antall_kvinner, "\n")
+cat("Antall menn:", antall_menn, "\n")
+```
+
+```{r}
+# Telle antall kvinner og menn
+antall_kjonn2 <- table(hoydeZeroInc$sex)
+
+# Konverterer resultatet til et data.frame
+kjonn_data2 <- data.frame(Kjonn = names(antall_kjonn2), Antall = as.numeric(antall_kjonn2))
+
+# Opprett barplot
+ggplot(kjonn_data2, aes(x = Kjonn, y = Antall, fill = Kjonn)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Fordeling av kvinner og menn i datasettet") +
+  xlab("Kjønn") +
+  ylab("Antall") +
+  scale_fill_manual(values = c("female" = "blue", "male" = "red"))
+```
+
+I datasettet HøydeZeroInc er det en mer lik fordeling av kjønn, herav 995 kvinner og 745 menn.
+
+Gjennomsnittshøyde i High og Zero datasettene
+
+```{r}
+gjennomsnitt_high_inc <- mean(hoydeHighInc$height)
+gjennomsnitt_zero_inc <- mean(hoydeZeroInc$height)
+print(gjennomsnitt_data)
+```
+
+Tallene er i inches, men i cm blir dette da
+
+hoydeHighInc= 179m
+
+hoydeZeroInc= 169 m
+
+Som vi ser er gjennosnittshøyden høyere på de som tjener mer.
+Dette kan komme av at, som tidligere data viser, menn tjener mer enn kvinner og derfor drar det opp gjennomsnittshøyden.
+
+```{r}
+#Fjerner NA-verdier fra datasettet "hoydeZeroInc"
+hoydeZeroInc_cleaned <- na.omit(hoydeZeroInc)
+
+#Beregner gjennomsnittlig BMI for datasettet "hoydeHighInc"
+gjennomsnitt_high_inc2 <- mean(hoydeHighInc$bmi)
+
+#Beregner gjennomsnittlig BMI for datasettet "hoydeZeroInc" uten NA-verdier
+gjennomsnitt_zero_inc2 <- mean(hoydeZeroInc_cleaned$bmi)
+print(gjennomsnitt_high_inc2)
+print(gjennomsnitt_zero_inc2)
+```
+
+Som vi ser er gjennomsnittlig BMI for de med høy inntekt og de med ingen inntekt vesentlig lik.
 
 ## Resultater/konklusjon
 
