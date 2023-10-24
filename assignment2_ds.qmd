@@ -205,7 +205,11 @@ Den brukes offisielt for å vurdere om en person er undervektig, normalvektig, o
 
 En høy BMI kan påvirke arbeidsmarkedsprestasjonene negativt av flere grunner.
 Overvekt kan forverre helsen, noe som kan redusere produktiviteten og dermed lønningene.
+<<<<<<< HEAD
 I tillegg kan det forekomme diskriminering i arbeidsmarkedet knyttet til fedme @piwowar2018
+=======
+I tillegg kan det forekomme diskriminering i arbeidsmarkedet knyttet til fedme\@piwowar2018.
+>>>>>>> 9785241b84e764057889df32dd49bd635d7e36c6
 
 I denne oppgaven vil vi først og fremst utforske sammenhengen mellom en persons BMI og deres inntekt.
 Deretter vil vi analysere forholdet mellom BMI og inntekt blant menn og kvinner separat, videre blant menn/kvinner gifte og ugifte, og til slutt, blant menn og kvinner basert på deres utdanningsnivå (edu_fac).
@@ -570,7 +574,8 @@ Gjennomsnittshøyde i High og Zero datasettene
 ```{r}
 gjennomsnitt_high_inc <- mean(hoydeHighInc$height)
 gjennomsnitt_zero_inc <- mean(hoydeZeroInc$height)
-print(gjennomsnitt_data)
+print(gjennomsnitt_high_inc)
+print(gjennomsnitt_zero_inc)
 ```
 
 Tallene er i inches, men i cm blir dette da
