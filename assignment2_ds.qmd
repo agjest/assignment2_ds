@@ -2,6 +2,7 @@
 title: "assignment2_ds"
 format: html
 editor: visual
+bibliography: references.bib
 ---
 
 ```{r}
@@ -199,9 +200,18 @@ hoyde %>%
 
 ## Gruppe 5: Sammenheng mellom bmi og inntekt
 
-Først skal vi se på sammenhengen mellom bmi og inntekt.
+Kroppsmasseindeks (KMI), også kjent som Body Mass Index (BMI), er en måleenhet som beskriver forholdet mellom en persons høyde og vekt.
+Den brukes offisielt for å vurdere om en person er undervektig, normalvektig, overvektig eller lider av fedme @allmennlege2019.
 
+En høy BMI kan påvirke arbeidsmarkedsprestasjonene negativt av flere grunner.
+Overvekt kan forverre helsen, noe som kan redusere produktiviteten og dermed lønningene.
+I tillegg kan det forekomme diskriminering i arbeidsmarkedet knyttet til fedme@piwowar2018.
+
+I denne oppgaven vil vi først og fremst utforske sammenhengen mellom en persons BMI og deres inntekt.
+Deretter vil vi analysere forholdet mellom BMI og inntekt blant menn og kvinner separat, videre blant menn/kvinner gifte og ugifte, og til slutt, blant menn og kvinner basert på deres utdanningsnivå (edu_fac).
 Datasettet som blir brukt i oppgaven er heights.
+
+Først skal vi se på sammenhengen mellom bmi og inntekt.
 
 ```{r}
 #lager en tabell som kun viser variablene inntekt og bmi
@@ -283,7 +293,7 @@ I datasettet vårt har vi 2520 observasjoner av menn og 2534 observasjoner av kv
 Videre kan vi se på inntekten.
 Gjennomsnittlig inntekt for menn ligger noe høyere enn kvinner, herav 54280 og 39401.
 Ser vi på gjennomsnittlig BMI så kommer menn og kvinner så og si likt ut, herav på menn 29,23362 og kvinner 29,16163.
-I følge "AARTIKKEL" klassifiseres normalvekt med en BMI mellom 18,5-25, som vil si at gjennomsnittet ++ som er med i dataene er overvektige.
+I følge @cdc2022 klassifiseres normalvekt med en BMI mellom 18,5-25, som vil si at gjennomsnittet ++ som er med i dataene er overvektige.
 
 ```{r}
 library(dplyr)
@@ -341,7 +351,6 @@ renset_dataset3 <- na.omit(bmi_inntekt_sex_married)
 ggplot(bmi_inntekt_sex_married, aes(x = bmi, y = income, color = sex, shape = married)) +
   geom_point() +
   labs(title = "Sammenheng mellom BMI og Inntekt etter Kjønn og Sivilstand") +
-  scale_color_manual(values = c("male" = "blue", "female" = "red")) +
   scale_shape_manual(values = c("married" = 15, "not married" = 1))
 
 ```
@@ -422,7 +431,6 @@ renset_dataset4 <- na.omit(bmi_inntekt_sex_edufac)
 ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, shape = edu_fac)) +
   geom_point() +
   labs(title = "Sammenheng mellom BMI og Inntekt etter Kjønn og Utdanningsnivå") +
-  scale_color_manual(values = c("male" = "blue", "female" = "red")) +
   scale_shape_manual(values = c("not_cc" = 15, "not_hs" = 1, "not_col" = 8, "col_plus" = 16))
 ```
 
@@ -488,7 +496,6 @@ scatterplots6 <- ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, s
   geom_point() +
   facet_wrap(~edu_fac) +
   labs(title = "Sammenheng mellom BMI og Inntekt etter Utdanningsnivå") +
-  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
   scale_shape_manual(values = c("not_hs" = 15, "not_cc" = 1, "not_col" = 8, "col_plus" = 16))
 
 print(scatterplots6)
@@ -522,8 +529,7 @@ ggplot(kjonn_data, aes(x = Kjonn, y = Antall, fill = Kjonn)) +
   geom_bar(stat = "identity") +
   labs(title = "Fordeling av kvinner og menn i datasettet") +
   xlab("Kjønn") +
-  ylab("Antall") +
-  scale_fill_manual(values = c("female" = "blue", "male" = "red"))
+  ylab("Antall") 
 ```
 
 Som vi ser er det betydelig mange flere menn enn kvinner som går under datasettet HøydeHighInc, herav 12 kvinner og 131 menn.
@@ -554,8 +560,7 @@ ggplot(kjonn_data2, aes(x = Kjonn, y = Antall, fill = Kjonn)) +
   geom_bar(stat = "identity") +
   labs(title = "Fordeling av kvinner og menn i datasettet") +
   xlab("Kjønn") +
-  ylab("Antall") +
-  scale_fill_manual(values = c("female" = "blue", "male" = "red"))
+  ylab("Antall") 
 ```
 
 I datasettet HøydeZeroInc er det en mer lik fordeling av kjønn, herav 995 kvinner og 745 menn.
