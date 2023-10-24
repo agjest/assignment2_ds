@@ -283,7 +283,7 @@ I datasettet vårt har vi 2520 observasjoner av menn og 2534 observasjoner av kv
 Videre kan vi se på inntekten.
 Gjennomsnittlig inntekt for menn ligger noe høyere enn kvinner, herav 54280 og 39401.
 Ser vi på gjennomsnittlig BMI så kommer menn og kvinner så og si likt ut, herav på menn 29,23362 og kvinner 29,16163.
-I følge "AARTIKKEL" klassifiseres normalvekt med en BMI mellom 18,5-24,9, som vil si at gjennomsnittet ++ som er med i dataene er overvektige.
+I følge "AARTIKKEL" klassifiseres normalvekt med en BMI mellom 18,5-25, som vil si at gjennomsnittet ++ som er med i dataene er overvektige.
 
 ```{r}
 library(dplyr)
@@ -593,6 +593,20 @@ print(gjennomsnitt_zero_inc2)
 Som vi ser er gjennomsnittlig BMI for de med høy inntekt og de med ingen inntekt vesentlig lik.
 
 ## Resultater/konklusjon
+
+Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner:
+
+Etter å ha analysert dataene, kan vi trekke den konklusjonen at det er en svak tendens til at personer med høyere inntekt har en litt lavere BMI, både blant menn og kvinner.
+
+Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner etter sivilstand:
+
+Vi fant ut at menn som er gift har høyere inntekt enn de som ikke er gift, men de har også en høyere BMI enn de som ikke er gift.
+Tilsvarende har gifte kvinner også høyere inntekt sammenlignet med ugifte kvinner, men gifte kvinner har samtidig en lavere BMI enn de ugifte kvinnene.
+
+Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner gitt utdanningsnivå (edu_fac):
+
+Når vi undersøkte sammenhengen mellom utdanningsnivå og både BMI og inntekt, fant vi at de som ikke har utdanning har høyere inntekt jo høyere BMI de har, mens de med utdanning har høyere inntekt jo lavere BMI de har.
+Dette antyder at utdanningsnivå kan være en viktig faktor som påvirker forholdet mellom BMI og inntekt, med ulike mønstre for de med og uten utdanning.
 
 ## References
 
