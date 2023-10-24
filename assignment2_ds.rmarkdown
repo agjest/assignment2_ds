@@ -14,11 +14,13 @@ library(tidyverse)
 library(vtable)
 ```
 
+
 # **Er det BMI som bestemmer inntekt?**
 
 Datasettet vi har brukt gjennom oppgaven er kalt *heights* og er en del av pakken modelr, Wickham ([2020](https://msb105.netlify.app/assignments/h23/ass2/ass2-h23#ref-modelr)), som er en utvidelspakke for statistikksystemet R, R Core Team ([2021](https://msb105.netlify.app/assignments/h23/ass2/ass2-h23#ref-Rcore)).
 
 Følgende «chunk» er kode som samtlige grupper bør kjøre rett etter setup chunk-en slik at vi jobber med samme data og har samme variabelnavn.
+
 
 ```{r}
 hoyde <- modelr::heights
@@ -62,7 +64,9 @@ hoyde <- modelr::heights
 hoyde |>  st()
 ```
 
+
 ## Tre nye datasett
+
 
 ```{r}
 hoydeZeroInc |> st()
@@ -88,7 +92,9 @@ hoydeHighInc |> st()
 hoydeHighInc |> vt()
 ```
 
+
 ## Scatter plot for høyde og inntekt
+
 
 ```{r}
 hoyde  |> 
@@ -132,7 +138,9 @@ hoydeNormInc  |>
     )
 ```
 
+
 ## Histogram for to subsets
+
 
 ```{r}
 meanHeightMale <- hoyde |> 
@@ -198,6 +206,7 @@ hoyde %>%
     ) 
 ```
 
+
 ## Gruppe 5: Sammenheng mellom bmi og inntekt
 
 Kroppsmasseindeks (KMI), også kjent som Body Mass Index (BMI), er en måleenhet som beskriver forholdet mellom en persons høyde og vekt.
@@ -213,6 +222,7 @@ Datasettet som blir brukt i oppgaven er heights.
 
 Først skal vi se på sammenhengen mellom bmi og inntekt.
 
+
 ```{r}
 #lager en tabell som kun viser variablene inntekt og bmi
 bmi_inntekt <- hoydeNormInc |> 
@@ -227,11 +237,13 @@ ggplot(bmi_inntekt, aes(x = bmi, y = income)) +
 
 ```
 
+
 Kommentar: Utifra datasettet som tar for seg inntekt og bmi får vi et raskt overblikk over de som skiller seg ut.
 Her ser vi at jo høyere BMI desto lavere inntekt.
 Dette er et datasett med ekstremt mange observasjoner og vi vil nå filtrere ut for å få et større bilde av hvordan BMI og inntekt faktisk henger sammen.
 
 Vi øsnker å se sammenhengen, herav om det er korrelasjon
+
 
 ```{r}
 #renser datasettet for NA verdier
@@ -243,6 +255,7 @@ correlation <- cor(hoydeNormInc$bmi, hoydeNormInc$income, use = "complete.obs")
 cat("Pearson-korrelasjon mellom BMI og inntekt:", correlation)
 ```
 
+
 Kommentar: Verdien -0,05105 indikerer en svak negativ korrelasjon.
 Dette betyr at når "bmi" øker, har "income" en tendens til å være litt lavere, og når "bmi" reduseres, har "income" en tendens til å være litt høyere.
 Imidlertid er korrelasjonen så svak at det er vanskelig å trekke sterke konklusjoner basert bare på denne verdien.
@@ -252,6 +265,7 @@ For å få en dypere innsikt i sammenhengen mellom disse variablene og eventuell
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner
 
 Videre skal vi undersøke hvordan sammenhengen er mellom bmi og inntekt mellom menn og kvinner.
+
 
 ```{r}
 #lager en tabll som har med variablene kjønn, inntekt og bmi
@@ -287,6 +301,7 @@ print(summary_stats)
 
 ```
 
+
 Som vi ser er average på kvinner og menn sin bmi nokså lik.
 I datasettet vårt har vi 2520 observasjoner av menn og 2534 observasjoner av kvinner som vil si at det er innhentet nokså lik data på kjønnene noe som gjør tallene vi får realistiske. 
 
@@ -294,6 +309,7 @@ Videre kan vi se på inntekten.
 Gjennomsnittlig inntekt for menn ligger noe høyere enn kvinner, herav 54280 og 39401.
 Ser vi på gjennomsnittlig BMI så kommer menn og kvinner så og si likt ut, herav på menn 29,23362 og kvinner 29,16163.
 I følge @cdc2022 klassifiseres normalvekt med en BMI mellom 18,5-25, som vil si at gjennomsnittet ++ som er med i dataene er overvektige.
+
 
 ```{r}
 library(dplyr)
@@ -312,12 +328,14 @@ cat("Pearson correlation between BMI and Income for Women:", correlation_female)
 
 ```
 
+
 -   For menn er det en svak negativ korrelasjon (ca. -0.019), noe som antyder at det er en liten tendens til at BMI reduseres når inntekten øker, men sammenhengen er svært svak.
 
 -   For kvinner er det også en svak negativ korrelasjon (ca. -0.089), som indikerer en lignende tendens, men igjen, sammenhengen er relativt svak.
 
 Dette betyr at det er en svak tendens til at personer med høyere inntekt har litt lavere BMI, både blant menn og kvinner, men sammenhengen er ikke spesielt sterk.
 Det kan være andre faktorer som påvirker BMI og inntekt i tillegg til kjønn, og det er viktig å vurdere disse faktorene for å få en mer helhetlig forståelse av sammenhengen.
+
 
 ```{r}
 
@@ -333,9 +351,11 @@ ggplot(female_data, aes(x = bmi, y = income)) +
 
 ```
 
+
 ## 
 
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
+
 
 ```{r}
 bmi_inntekt_sex_married <- hoydeNormInc |> 
@@ -387,6 +407,7 @@ correlation_notmarried <- cor(notmarried_data$bmi, notmarried_data$income, use =
 cat("Pearson correlation between BMI and Income for not married:", correlation_notmarried)
 ```
 
+
 1.  **Pearson-korrelasjon mellom BMI og Income for married (gifte): -0.0563821**
 
     -   Denne verdien (-0.0563821) indikerer en svak negativ korrelasjon mellom BMI og inntekt blant gifte individer. Med andre ord, det er en liten tendens til at gifte personer med høyere BMI-verdier har litt lavere inntekt, og gifte personer med lavere BMI-verdier har litt høyere inntekt. Den negative korrelasjonen tyder på en motsatt trend, men sammenhengen er svak.
@@ -398,6 +419,7 @@ cat("Pearson correlation between BMI and Income for not married:", correlation_n
 Sammenfattende viser resultatene at det er en svak tendens til at både gifte og ugifte individer med høyere BMI-verdier har litt lavere inntekt, men sammenhengen er ikke spesielt sterk.
 Dette betyr at BMI alene ikke er en sterk prediktor for inntekt, uavhengig av sivilstand.
 Andre faktorer kan spille en viktigere rolle i å påvirke inntekten til både gifte og ugifte personer i datasettet ditt.
+
 
 ```{r}
 # Grupper data etter kjønn og beregn statistikk
@@ -412,10 +434,12 @@ summary_stats3 <- renset_dataset3 %>%
 print(summary_stats3)
 ```
 
+
 Menn som er gift har høyere inntekt enn men som ikke er gift men har også høyre BMI enn de som ikke er gift.
 Kvinner som er gift har også høyere inntekt enn kvinner som ikke er gift men kvinner som er gift har lavere BMI enn kvinner som ikke er gift.
 
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
+
 
 ```{r}
 bmi_inntekt_sex_edufac <- hoydeNormInc |> 
@@ -447,9 +471,11 @@ summary_stats4 <- renset_dataset4 %>%
 print(summary_stats4)
 ```
 
+
 Som vi kan lese av tabellen ser man at man som både mann og kvinne får høyere lønn jo mer utdannning man har.
 Menn får fortsatt høyere lønn enn kvinner på bakgrunn avutdanning.
 Gjennomsnittlig BMI ligger jevnt som tidligere, bortsett fra at de både menn og kvinner som har 4år + med utdanning har lavere BMI enn de andre med lavere utdanning.
+
 
 ```{r}
 # For hver utdanningskategori
@@ -461,6 +487,7 @@ for (edu_level in edu_levels) {
   cat("Pearson correlation between BMI and Income for", edu_level, ":", correlation, "\n")
 }
 ```
+
 
 Pearson correlation between BMI and Income for not_hs : 0.06099851
 
@@ -490,6 +517,7 @@ For de med lavere utdanning (not_hs og not_cc), er det en svak positiv sammenhen
 For de som ikke har fullført college (not_col), er det en svak negativ sammenheng, og for de med høyere collegeutdanning (col_plus), er sammenhengen mer negativ.
 Det er viktig å merke seg at alle disse sammenhengene er svake, noe som betyr at andre faktorer kan spille en betydelig rolle i å påvirke inntektene.
 
+
 ```{r}
 # Opprett separate scatterplott for hver utdanningskategori
 scatterplots6 <- ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, shape = edu_fac)) +
@@ -501,9 +529,11 @@ scatterplots6 <- ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, s
 print(scatterplots6)
 ```
 
+
 ## HøydeHighInc og HøydeZeroInc
 
 Fordeling mellom kvinner og kjønn i datasettet HøydeHighInc
+
 
 ```{r}
 # Telle antall kvinner
@@ -532,9 +562,11 @@ ggplot(kjonn_data, aes(x = Kjonn, y = Antall, fill = Kjonn)) +
   ylab("Antall") 
 ```
 
+
 Som vi ser er det betydelig mange flere menn enn kvinner som går under datasettet HøydeHighInc, herav 12 kvinner og 131 menn.
 
 HøydeZeroInc
+
 
 ```{r}
 # Telle antall kvinner
@@ -563,15 +595,18 @@ ggplot(kjonn_data2, aes(x = Kjonn, y = Antall, fill = Kjonn)) +
   ylab("Antall") 
 ```
 
+
 I datasettet HøydeZeroInc er det en mer lik fordeling av kjønn, herav 995 kvinner og 745 menn.
 
 Gjennomsnittshøyde i High og Zero datasettene
+
 
 ```{r}
 gjennomsnitt_high_inc <- mean(hoydeHighInc$height)
 gjennomsnitt_zero_inc <- mean(hoydeZeroInc$height)
 print(gjennomsnitt_data)
 ```
+
 
 Tallene er i inches, men i cm blir dette da
 
@@ -581,6 +616,7 @@ hoydeZeroInc= 169 m
 
 Som vi ser er gjennosnittshøyden høyere på de som tjener mer.
 Dette kan komme av at, som tidligere data viser, menn tjener mer enn kvinner og derfor drar det opp gjennomsnittshøyden.
+
 
 ```{r}
 #Fjerner NA-verdier fra datasettet "hoydeZeroInc"
@@ -594,6 +630,7 @@ gjennomsnitt_zero_inc2 <- mean(hoydeZeroInc_cleaned$bmi)
 print(gjennomsnitt_high_inc2)
 print(gjennomsnitt_zero_inc2)
 ```
+
 
 Som vi ser er gjennomsnittlig BMI for de med høy inntekt og de med ingen inntekt vesentlig lik.
 
@@ -615,7 +652,9 @@ Dette antyder at utdanningsnivå kan være en viktig faktor som påvirker forhol
 
 ## References
 
+
 ```{r}
 #| echo: false
 # siste
 ```
+
