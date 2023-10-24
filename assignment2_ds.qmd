@@ -61,14 +61,6 @@ hoyde <- modelr::heights
 hoyde |>  st()
 ```
 
-Kommenter fra datasettet.
-
-Videre bruker mutate for å lage en variabel som forteller oss BMI.
-
-Videre forenkler vi education slik at vi skiller mellom kategorier Not High School Exam (not_hs), Not Community College (not_cc), Not College (not_col) og 4 years College or more (col_plus).
-
-Datasettet Høyde skal videre deles inn i tre; hoyde_inc_zero, hoyde_inc_norm og hoyde_inc_high.
-
 ## Tre nye datasett
 
 ```{r}
@@ -205,7 +197,7 @@ hoyde %>%
     ) 
 ```
 
-## Gruppe 5: Sammenheng mellom bmi inntekt
+## Gruppe 5: Sammenheng mellom bmi og inntekt
 
 Først skal vi se på sammenhengen mellom bmi og inntekt.
 
