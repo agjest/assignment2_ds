@@ -1,0 +1,263 @@
+---
+title: "Assignment 2 - Sammenheng mellom BMI og inntekt."
+author: "Ingrid og Emilie"
+format: 
+  revealjs:
+        theme: simple
+        reveal_options: 
+        code_fold: show
+        incremnetal: true
+        smaller: true
+        scollable: true
+        slide-number: c/t
+editor: visual
+editor_options:
+  markdown:
+    wrap: 72
+    canonical: true
+    chunk_output_type: console
+echo: true
+eval: true 
+CSL: apa-annotated-bibliography.csl
+---
+
+## Vår oppgave
+
+-   sammenheng bmi og inntekt
+
+-   sammenheng bmi og inntektsforskjell mellom menn/kvinner
+
+-   sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt
+    gift/ugift
+
+-   sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
+
+## Hva er BMI?
+
+-   Body Mass Index --\> En måleenhet som beskriver forholdet mellom en
+    persons høyde og vekt @allmennlege2019
+
+-   Vurdere om en person er:
+
+    -   Undervektig
+    -   Normalvektig
+    -   Overvektig
+    -   Lider av fedme
+
+    @allmennlege2019
+
+    ![](images/BMIBILDE-01.jpeg){width="6.8cm"}
+
+## Sammenheng mellom BMI og inntekt
+
+-   Datasett -\> hoydeNormInc
+-   Select -\> income og BMI
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.28.21.png){fig-align="center"
+width="748"}
+
+-   Kommentar: Jo høyere BMI desto lavere inntekt
+
+## Korrelasjon mellom BMI og inntekt
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.34.35.png){fig-align="center"
+width="510"}
+
+-   Kommentar: indikerer en svak negativ korrelasjon
+
+## Sammenheng BMI og inntektsforskjell mellom menn/kvinner
+
+-   Datasett -\> hoydeNormInc
+-   Select -\> income, BMI og sex
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.37.16.png){fig-align="center"
+width="504"}
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.38.13.png){fig-align="center"
+width="522"}
+
+## Korrelasjon mellom BMI og inntekt for menn
+
+## ![](images/Skjermbilde%202023-10-27%20kl.%2011.41.06.png){width="628"}
+
+-   Svak negativ korrelasjon (ca. -0.019), noe som antyder at det er en
+    liten tendens til at BMI reduseres når inntekten øker, men
+    sammenhengen er svært svak.
+
+## Korrelasjon mellom BMI og inntekt for kvinner
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.43.54.png){fig-align="center"
+width="624"}
+
+-   Svak negativ korrelasjon (ca. -0.089), som indikerer en lignende
+    tendens, men igjen, sammenhengen er relativt svak.
+
+## Sammenheng BMI og inntektsforskjell mellom menn/kvinner - Oppsummert
+
+Svak tendens til at personer med høyere inntekt har litt lavere BMI,
+både blant menn og kvinner, men sammenhengen er ikke spesielt sterk. Det
+kan være andre faktorer som påvirker BMI og inntekt i tillegg til kjønn,
+og det er viktig å vurdere disse faktorene for å få en mer helhetlig
+forståelse av sammenhengen.
+
+## Sammenheng BMI og inntektsforskjell mellom menn/kvinner gitt gift/ugift
+
+-   Datasett -\> hoydeNormInc
+
+-   Select -\> income, BMI, sex og married
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.48.04.png){width="755"}
+
+## Gift 👩‍❤️‍💋‍👨
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.49.52.png){fig-align="center"
+width="457"}
+
+## Ugift 🧑‍🦳
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.50.54.png){fig-align="center"
+width="453"}
+
+## Statistikk
+
+![](images/Skjermbilde%202023-10-27%20kl.%2011.53.39.png)
+
+Menn som er gift har høyere inntekt enn men som ikke er gift men har
+også høyre BMI enn de som ikke er gift. Kvinner som er gift har også
+høyere inntekt enn kvinner som ikke er gift men kvinner som er gift har
+lavere BMI enn kvinner som ikke er gift.
+
+## Korrelasjon mellom BMI og inntekt for Gift / Ugift
+
+1.  **Pearson-korrelasjon mellom BMI og Income for married (gifte):
+    -0.0563821**
+
+    -   Denne verdien (-0.0563821) indikerer en svak negativ korrelasjon
+        mellom BMI og inntekt blant gifte individer. Med andre ord, det
+        er en liten tendens til at gifte personer med høyere BMI-verdier
+        har litt lavere inntekt, og gifte personer med lavere
+        BMI-verdier har litt høyere inntekt. Den negative korrelasjonen
+        tyder på en motsatt trend, men sammenhengen er svak.
+
+2.  **Pearson-korrelasjon mellom BMI og Income for not married (ugifte):
+    -0.03155596**
+
+    -   Denne verdien (-0.03155596) indikerer også en svak negativ
+        korrelasjon mellom BMI og inntekt blant ugifte individer. På
+        samme måte som for gifte, antyder dette at ugifte personer med
+        høyere BMI-verdier har litt lavere inntekt, og ugifte personer
+        med lavere BMI-verdier har litt høyere inntekt. Igjen er
+        sammenhengen svak.
+
+## Sammenheng BMI og inntektsforskjell mellom menn/kvinner gitt edu_fac
+
+-   Datasett -\> hoydeNormInc
+-   Select -\> income, BMI, sex, married og edu_fac
+
+![](images/Skjermbilde%202023-10-27%20kl.%2012.02.42.png){width="697"}
+
+## Litt mer oversikt
+
+![](images/Skjermbilde%202023-10-27%20kl.%2012.06.36.png){width="664"}
+
+## Statistikk
+
+![](images/Skjermbilde%202023-10-27%20kl.%2012.03.43.png)
+
+Som vi kan lese av tabellen ser man at man som både mann og kvinne får
+høyere lønn jo mer utdannning man har. Menn får fortsatt høyere lønn enn
+kvinner på bakgrunn avutdanning. Gjennomsnittlig BMI ligger jevnt som
+tidligere, bortsett fra at de både menn og kvinner som har 4år + med
+utdanning har lavere BMI enn de andre med lavere utdanning.
+
+## Korrelasjon mellom BMI og inntektsforskjell mellom menn gitt edu_fac 🤷‍♂️
+
+**not_hs:** En positiv korrelasjon (0.1265232) indikerer at blant de som
+ikke har fullført videregående skole, har menn med høyere BMI-verdier
+tendens til å ha noe høyere inntekt.
+
+**not_cc :** En positiv korrelasjon (0.07223273) antyder at blant de som
+ikke har fullført college på lavere nivå, har menn med høyere
+BMI-verdier en svak tendens til å ha litt høyere inntekt.
+
+**not_col:** En svak negativ korrelasjon (-0.009372377) indikerer at
+blant de som ikke har fullført høyere utdanning, har menn med høyere
+BMI-verdier en svak tendens til å ha litt lavere inntekt. Sammenhengen
+er svak og kan være tilfeldig.
+
+**col_plus:** En negativ korrelasjon (-0.146209) viser at blant de med
+høyere utdanning, har menn med høyere BMI-verdier en tydelig tendens til
+å ha lavere inntekt.
+
+## Korrelasjon mellom BMI og inntektsforskjell mellom kvinner gitt edu_fac 🤷‍♀️
+
+**not_hs:** Også en positiv korrelasjon (0.01440144), men sammenhengen
+er svakere og mindre tydelig for kvinner.
+
+**not_cc:** Igjen en positiv korrelasjon (0.03146271), men sammenhengen
+er også svakere for kvinner.
+
+**not_col:** En mer negativ korrelasjon (-0.09717316) indikerer at
+kvinner i samme kategori, med høyere BMI-verdier, har en tendens til å
+ha lavere inntekt, og sammenhengen er mer uttalt for kvinner.
+
+**col_plus:** Også en negativ korrelasjon (-0.1359277) som indikerer en
+lignende sammenheng for kvinner med høyere utdanning.
+
+## Oppsummert 
+
+Sammenfattende viser resultatene hvordan sammenhengen mellom BMI og
+inntekt varierer basert på utdanningsnivå. For noen kategorier er
+sammenhengen positiv, mens den er negativ for andre, men i de fleste
+tilfellene er sammenhengen svak. Forskjellene mellom menn og kvinner i
+disse sammenhengene varierer også.
+
+## HøydeHighInc 
+
+![](images/Skjermbilde 2023-10-27 kl. 13.05.11.png)
+
+## HøydeZeroInc
+
+![](images/Skjermbilde 2023-10-27 kl. 13.05.58.png)
+
+## Gjennomsnittshøyde i High og Zero datasettene
+
+![](images/Skjermbilde 2023-10-27 kl. 13.07.25.png){fig-align="center"
+width="399"}
+
+-   hoydeHighInc= 179m
+-   hoydeZeroInc= 169 m
+
+## Gjennomsnitt BMI i High og Zero datasettene
+
+![](images/Skjermbilde 2023-10-27 kl. 13.08.54.png){fig-align="center"
+width="436"}
+
+Som vi ser er gjennomsnittlig BMI for de med høy inntekt og de med ingen
+inntekt vesentlig lik.
+
+## Resultater/konklusjon
+
+Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner:
+
+Etter å ha analysert dataene, kan vi trekke den konklusjonen at det er
+en svak tendens til at personer med høyere inntekt har en litt lavere
+BMI, både blant menn og kvinner.
+
+Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner etter
+sivilstand:
+
+Vi fant ut at menn som er gift har høyere inntekt enn de som ikke er
+gift, men de har også en høyere BMI enn de som ikke er gift. Tilsvarende
+har gifte kvinner også høyere inntekt sammenlignet med ugifte kvinner,
+men gifte kvinner har samtidig en lavere BMI enn de ugifte kvinnene.
+
+Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner gitt
+utdanningsnivå (edu_fac):
+
+Når vi undersøkte sammenhengen mellom utdanningsnivå og både BMI og
+inntekt, fant vi at de som ikke har utdanning har høyere inntekt jo
+høyere BMI de har, mens de med utdanning har høyere inntekt jo lavere
+BMI de har. Dette antyder at utdanningsnivå kan være en viktig faktor
+som påvirker forholdet mellom BMI og inntekt, med ulike mønstre for de
+med og uten utdanning.
