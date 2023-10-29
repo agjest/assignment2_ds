@@ -1,0 +1,10 @@
+---
+title: "ag comments"
+format: html
+editor: visual
+---
+
+-   Dokumentet er reproduserbart. Flott!
+-   Masse spennende dere har gjort. Noe gjør dere unødvendig komplisert. Se mine forslag til forenkling.
+-   Ta i bruk hash-pipene label: og fig-cap: . Da kan dere ha caption på figurene og også kryssreferere til dem.
+-   Når det er snakk om flere variabler (særlig kategorivariabler) som skal analyseres er facet_wrap() og facet_grid() suverene. Se mine forslag til bruk.

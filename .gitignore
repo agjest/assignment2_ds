@@ -7,6 +7,8 @@
 *.pptx
 *.tex
 *.md
+assignment2_ds_files/*.png
+Presentasjon_ds_ass2_files/*.png
 
 .Rhistory
 .Rapp.history
