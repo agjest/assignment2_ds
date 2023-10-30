@@ -479,31 +479,31 @@ for (edu_level in edu_levels) {
 1\.
 **Utdanningsnivå "not_hs" (ikke fullført videregående skole):**
 
- - **Menn:** En positiv korrelasjon (0.1265232) indikerer at blant de som ikke har fullført videregående skole, har menn med høyere BMI-verdier tendens til å ha noe høyere inntekt.
+-   **Menn:** En positiv korrelasjon (0.1265232) indikerer at blant de som ikke har fullført videregående skole, har menn med høyere BMI-verdier tendens til å ha noe høyere inntekt.
 
- - **Kvinner**: Også en positiv korrelasjon (0.01440144), men sammenhengen er svakere og mindre tydelig for kvinner.
+-   **Kvinner**: Også en positiv korrelasjon (0.01440144), men sammenhengen er svakere og mindre tydelig for kvinner.
 
 2\.
 **Utdanningsnivå "not_cc" (ikke fullført college på lavere nivå):**
 
- - **Menn:** En positiv korrelasjon (0.07223273) antyder at blant de som ikke har fullført college på lavere nivå, har menn med høyere BMI-verdier en svak tendens til å ha litt høyere inntekt.
+-   **Menn:** En positiv korrelasjon (0.07223273) antyder at blant de som ikke har fullført college på lavere nivå, har menn med høyere BMI-verdier en svak tendens til å ha litt høyere inntekt.
 
- - **Kvinner:** Igjen en positiv korrelasjon (0.03146271), men sammenhengen er også svakere for kvinner.
+-   **Kvinner:** Igjen en positiv korrelasjon (0.03146271), men sammenhengen er også svakere for kvinner.
 
 3\.
 **Utdanningsnivå "not_col" (ikke fullført høyere utdanning):**
 
- - **Menn:** En svak negativ korrelasjon (-0.009372377) indikerer at blant de som ikke har fullført høyere utdanning, har menn med høyere BMI-verdier en svak tendens til å ha litt lavere inntekt.
-Sammenhengen er svak og kan være tilfeldig.
+-   **Menn:** En svak negativ korrelasjon (-0.009372377) indikerer at blant de som ikke har fullført høyere utdanning, har menn med høyere BMI-verdier en svak tendens til å ha litt lavere inntekt.
+    Sammenhengen er svak og kan være tilfeldig.
 
- - **Kvinner**: En mer negativ korrelasjon (-0.09717316) indikerer at kvinner i samme kategori, med høyere BMI-verdier, har en tendens til å ha lavere inntekt, og sammenhengen er mer uttalt for kvinner.
+-   **Kvinner**: En mer negativ korrelasjon (-0.09717316) indikerer at kvinner i samme kategori, med høyere BMI-verdier, har en tendens til å ha lavere inntekt, og sammenhengen er mer uttalt for kvinner.
 
 4\.
 **Utdanningsnivå "col_plus" (har fullført høyere utdanning):**
 
- - **Menn:** En negativ korrelasjon (-0.146209) viser at blant de med høyere utdanning, har menn med høyere BMI-verdier en tydelig tendens til å ha lavere inntekt.
+-   **Menn:** En negativ korrelasjon (-0.146209) viser at blant de med høyere utdanning, har menn med høyere BMI-verdier en tydelig tendens til å ha lavere inntekt.
 
- - **Kvinner:** Også en negativ korrelasjon (-0.1359277) som indikerer en lignende sammenheng for kvinner med høyere utdanning.
+-   **Kvinner:** Også en negativ korrelasjon (-0.1359277) som indikerer en lignende sammenheng for kvinner med høyere utdanning.
 
 Sammenfattende viser resultatene hvordan sammenhengen mellom BMI og inntekt varierer basert på utdanningsnivå.
 For noen kategorier er sammenhengen positiv, mens den er negativ for andre, men i de fleste tilfellene er sammenhengen svak.

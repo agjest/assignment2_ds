@@ -204,7 +204,7 @@ ha lavere inntekt, og sammenhengen er mer uttalt for kvinner.
 **col_plus:** Også en negativ korrelasjon (-0.1359277) som indikerer en
 lignende sammenheng for kvinner med høyere utdanning.
 
-## Oppsummert 
+## Oppsummert
 
 Sammenfattende viser resultatene hvordan sammenhengen mellom BMI og
 inntekt varierer basert på utdanningsnivå. For noen kategorier er
@@ -212,17 +212,17 @@ sammenhengen positiv, mens den er negativ for andre, men i de fleste
 tilfellene er sammenhengen svak. Forskjellene mellom menn og kvinner i
 disse sammenhengene varierer også.
 
-## HøydeHighInc 
+## HøydeHighInc
 
-![](images/Skjermbilde 2023-10-27 kl. 13.05.11.png)
+![](images/Skjermbilde%202023-10-27%20kl.%2013.05.11.png)
 
 ## HøydeZeroInc
 
-![](images/Skjermbilde 2023-10-27 kl. 13.05.58.png)
+![](images/Skjermbilde%202023-10-27%20kl.%2013.05.58.png)
 
 ## Gjennomsnittshøyde i High og Zero datasettene
 
-![](images/Skjermbilde 2023-10-27 kl. 13.07.25.png){fig-align="center"
+![](images/Skjermbilde%202023-10-27%20kl.%2013.07.25.png){fig-align="center"
 width="399"}
 
 -   hoydeHighInc= 179m
@@ -230,7 +230,7 @@ width="399"}
 
 ## Gjennomsnitt BMI i High og Zero datasettene
 
-![](images/Skjermbilde 2023-10-27 kl. 13.08.54.png){fig-align="center"
+![](images/Skjermbilde%202023-10-27%20kl.%2013.08.54.png){fig-align="center"
 width="436"}
 
 Som vi ser er gjennomsnittlig BMI for de med høy inntekt og de med ingen
