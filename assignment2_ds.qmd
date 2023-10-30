@@ -3,6 +3,7 @@ title: "assignment2_ds"
 format: html
 editor: visual
 bibliography: references.bib
+language: nb.yaml
 ---
 
 ```{r}
@@ -231,7 +232,7 @@ Kommentar: Utifra datasettet som tar for seg inntekt og bmi får vi et raskt ove
 Her ser vi at jo høyere BMI desto lavere inntekt.
 Dette er et datasett med ekstremt mange observasjoner og vi vil nå filtrere ut for å få et større bilde av hvordan BMI og inntekt faktisk henger sammen.
 
-Vi øsnker å se sammenhengen, herav om det er korrelasjon
+Vi ønsker å se sammenhengen, herav om det er korrelasjon
 
 ```{r}
 #renser datasettet for NA verdier
@@ -265,26 +266,55 @@ bmi_inntekt_sex <- hoydeNormInc |>
 ```
 
 ```{r}
-ggplot(bmi_inntekt_sex, aes(x = bmi, y = income, color = sex)) +
+ggplot(renset_dataset2, aes(x = bmi, y = income, color = sex)) +
   geom_point() + 
   labs(title = "Scatterplot av sammenhengen mellom BMI og inntekt" 
        )
 ```
 
+AG vil heller forslå:
+
 ```{r}
-library(dplyr)
+#| message: false
+#| label: fig-bmi-inc
+#| fig-cap: "Scatterplot av sammenhengen mellom BMI og inntekt"
+hoydeNormInc |> 
+  filter(!is.na(bmi)) |> 
+ggplot(mapping = aes(x = bmi, y = income, color = sex)) +
+  geom_point() +
+  geom_smooth(mapping = aes(colour = sex), method = lm)
+```
+
+Da har vi også tilgang til kryssreferanse av @fig-bmi-inc.
+
+```{r}
+# Ikke nødvendig. Dere laster tidyverse i setup så dplyr 
+# er allrede tilgjengelig
+#library(dplyr)
 
 # Grupper data etter kjønn og beregn statistikk
 summary_stats <- renset_dataset2 %>%
   group_by(sex) %>%
   summarize(
     Mean_BMI = mean(bmi),
-    Mean_Income = mean(income),
+    Mean_Income = mean(income)
   )
 
 # Vis resultatene
 print(summary_stats)
 
+```
+
+AG vil foreslå:
+
+```{r}
+hoydeNormInc |> 
+  filter(!is.na(bmi)) |>
+  group_by(sex) %>%
+  summarize(
+    Mean_BMI = mean(bmi),
+    Mean_Income = mean(income)
+  )
 ```
 
 Som vi ser er average på kvinner og menn sin bmi nokså lik.
@@ -293,10 +323,10 @@ I datasettet vårt har vi 2520 observasjoner av menn og 2534 observasjoner av kv
 Videre kan vi se på inntekten.
 Gjennomsnittlig inntekt for menn ligger noe høyere enn kvinner, herav 54280 og 39401.
 Ser vi på gjennomsnittlig BMI så kommer menn og kvinner så og si likt ut, herav på menn 29,23362 og kvinner 29,16163.
-I følge @cdc2022 klassifiseres normalvekt med en BMI mellom 18,5-25, som vil si at gjennomsnittet ++ som er med i dataene er overvektige.
+I følge @cdc2022 klassifiseres normalvekt med en BMI mellom 18,5-25, som vil si at gjennomsnittet som er med i dataene er overvektige.
 
 ```{r}
-library(dplyr)
+#library(dplyr)
 
 #Filtrer datasettet for menn og kvinner
 male_data <- filter(renset_dataset2, sex == "male")
@@ -330,10 +360,24 @@ ggplot(male_data, aes(x = bmi, y = income)) +
 ggplot(female_data, aes(x = bmi, y = income)) +
   geom_point() +
   labs(title = "Sammenheng mellom BMI og Inntekt for Kvinner")
-
 ```
 
-## 
+AG foreslår:
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-bmi-inc-sex
+#| fig-cap: "Sammenhengen mellom bmi og inntekt for menn og kvinner. Datasettet er begrenset til inntekter større enn $0 og mindre enn $343830."
+hoydeNormInc |>
+  filter(!is.na(bmi)) |> 
+  ggplot(aes(x = bmi, y = income)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  facet_wrap(~ sex)
+```
+
+Fra @fig-bmi-inc-sex ser vi at bmi ser ut til å større negativ innvirkning på kvinners lønn enn på menns.
 
 ## Sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt gift/ugift
 
@@ -372,6 +416,23 @@ library(gridExtra)
 grid.arrange(plot_married, plot_not_married, ncol = 2)
 
 ```
+
+AG foreslår:
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-bmi-inc-m-sex
+#| fig-cap: "BMI ser ut til å ha størst negativ innvirkning på lønn for gifte menn og kvinner."
+hoydeNormInc |> 
+  filter(!is.na(bmi)) |> 
+  ggplot(mapping = aes(x = bmi, y = income)) +
+  geom_point(alpha = 0.2, size = 0.6) +
+  geom_smooth(method = lm, se = FALSE) +
+  facet_grid(sex ~ married)
+```
+
+Fra @fig-bmi-inc-m-sex ser vi bla bla bla.
 
 ```{r}
 # Filtrer datasettet for menn og kvinner
@@ -433,6 +494,24 @@ ggplot(renset_dataset4, aes(x = bmi, y = income, color = sex, shape = edu_fac)) 
   labs(title = "Sammenheng mellom BMI og Inntekt etter Kjønn og Utdanningsnivå") +
   scale_shape_manual(values = c("not_cc" = 15, "not_hs" = 1, "not_col" = 8, "col_plus" = 16))
 ```
+
+AG foreslår bruk av facets:
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-bmi-inc-sex-edu
+#| fig-cap: "Noe overraskende ser vi at den negative effekten av bmi på inntekt er særlig sterk for menn med mer enn fire års universitetsutdannelse. For menn med High School eller mindre har vi faktisk en svakt positiv sammenheng. For kvinner er det for dem med universitetsutdannelse vi ser en svak negativ sammenheng."
+hoydeNormInc |> 
+  filter(!is.na(bmi)) |> 
+  filter(!is.na(edu_fac)) |> 
+  ggplot(mapping = aes(x = bmi, y = income)) +
+  geom_point(alpha = 0.3, size = 0.6) +
+  geom_smooth(method = lm, se = FALSE) +
+  facet_grid(edu_fac ~sex)
+```
+
+Igjen kan vi vise til @fig-bmi-inc-sex-edu og skrive bla bla bla.
 
 ```{r}
 # Grupper data etter kjønn og beregn statistikk
