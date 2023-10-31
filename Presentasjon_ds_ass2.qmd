@@ -19,6 +19,7 @@ editor_options:
 echo: true
 eval: true 
 CSL: apa-annotated-bibliography.csl
+bibliography: references.bib
 ---
 
 ## Vår oppgave
@@ -46,9 +47,13 @@ CSL: apa-annotated-bibliography.csl
     -   Overvektig
     -   Lider av fedme
 
-    @allmennlege2019
+-   Høy BMI kan påvirke arbeidsmarkedsprestasjonene negativt av flere
+    grunner:
 
-    ![](images/BMIBILDE-01.jpeg){width="6.8cm"}
+    -   forverre helsen -\> kan redusere produktiviteten og dermed
+        lønningene
+    -   forekomme diskriminering i arbeidsmarkedet knyttet til fedme i
+        følge @piwowar2018
 
 ## Sammenheng mellom BMI og inntekt
 
@@ -231,30 +236,29 @@ inntekt vesentlig lik.
 
 ## Resultater/konklusjon
 
-Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner:
+**Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner:**
 
-Etter å ha analysert dataene, kan vi trekke den konklusjonen at det er
-en svak tendens til at personer med høyere inntekt har en litt lavere
-BMI, både blant menn og kvinner.
+-   Etter å ha analysert dataene, kan vi trekke den konklusjonen at det
+    er en svak tendens til at personer med høyere inntekt har en litt
+    lavere BMI, både blant menn og kvinner.
 
-Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner etter
-sivilstand:
+**Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner
+etter sivilstand:**
 
-Vi fant ut at menn som er gift har høyere inntekt enn de som ikke er
-gift, men de har også en høyere BMI enn de som ikke er gift. Tilsvarende
-har gifte kvinner også høyere inntekt sammenlignet med ugifte kvinner,
-men gifte kvinner har samtidig en lavere BMI enn de ugifte kvinnene.
+-   Vi fant ut at menn som er gift har høyere inntekt enn de som ikke er
+    gift, men de har også en høyere BMI enn de som ikke er gift.
+    Tilsvarende har gifte kvinner også høyere inntekt sammenlignet med
+    ugifte kvinner, men gifte kvinner har samtidig en lavere BMI enn de
+    ugifte kvinnene.
 
-Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner gitt
-utdanningsnivå (edu_fac):
+**Sammenheng mellom BMI og inntektsforskjell mellom menn og kvinner gitt
+utdanningsnivå (edu_fac):**
 
-Når vi undersøkte sammenhengen mellom utdanningsnivå og både BMI og
-inntekt, fant vi at de som ikke har utdanning har høyere inntekt jo
-høyere BMI de har, mens de med utdanning har høyere inntekt jo lavere
-BMI de har. Dette antyder at utdanningsnivå kan være en viktig faktor
-som påvirker forholdet mellom BMI og inntekt, med ulike mønstre for de
-med og uten utdanning.
+-   Når vi undersøkte sammenhengen mellom utdanningsnivå og både BMI og
+    inntekt, fant vi at de som ikke har utdanning har høyere inntekt jo
+    høyere BMI de har, mens de med utdanning har høyere inntekt jo
+    lavere BMI de har. Dette antyder at utdanningsnivå kan være en
+    viktig faktor som påvirker forholdet mellom BMI og inntekt, med
+    ulike mønstre for de med og uten utdanning.
 
 ## References
-
--   @allmennlege2019
