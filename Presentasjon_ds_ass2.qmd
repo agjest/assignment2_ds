@@ -68,17 +68,17 @@ width="510"}
 ## Sammenheng BMI og inntektsforskjell mellom menn/kvinner
 
 -   Datasett -\> hoydeNormInc
+
 -   Select -\> income, BMI og sex
 
-![](images/Skjermbilde%202023-10-27%20kl.%2011.37.16.png){fig-align="center"
-width="504"}
+    ![](images/Skjermbilde 2023-10-31 kl. 08.25.32.png){width="686"}
 
 ![](images/Skjermbilde%202023-10-27%20kl.%2011.38.13.png){fig-align="center"
 width="522"}
 
 ## Korrelasjon mellom BMI og inntekt for menn
 
-## ![](images/Skjermbilde%202023-10-27%20kl.%2011.41.06.png){width="628"}
+## ![](images/Skjermbilde%202023-10-27%20kl.%2011.41.06.png){width="462"}
 
 -   Svak negativ korrelasjon (ca. -0.019), noe som antyder at det er en
     liten tendens til at BMI reduseres når inntekten øker, men
@@ -106,17 +106,11 @@ forståelse av sammenhengen.
 
 -   Select -\> income, BMI, sex og married
 
-![](images/Skjermbilde%202023-10-27%20kl.%2011.48.04.png){width="755"}
+    ![](images/Skjermbilde 2023-10-31 kl. 08.31.30.png){width="742"}
 
-## Gift 👩‍❤️‍💋‍👨
+    ## menn/kvinner gitt gift/ugift
 
-![](images/Skjermbilde%202023-10-27%20kl.%2011.49.52.png){fig-align="center"
-width="457"}
-
-## Ugift 🧑‍🦳
-
-![](images/Skjermbilde%202023-10-27%20kl.%2011.50.54.png){fig-align="center"
-width="453"}
+## ![](images/Skjermbilde 2023-10-31 kl. 08.34.43.png){width="788"}
 
 ## Statistikk
 
@@ -152,13 +146,10 @@ lavere BMI enn kvinner som ikke er gift.
 ## Sammenheng BMI og inntektsforskjell mellom menn/kvinner gitt edu_fac
 
 -   Datasett -\> hoydeNormInc
+
 -   Select -\> income, BMI, sex, married og edu_fac
 
-![](images/Skjermbilde%202023-10-27%20kl.%2012.02.42.png){width="697"}
-
-## Litt mer oversikt
-
-![](images/Skjermbilde%202023-10-27%20kl.%2012.06.36.png){width="664"}
+    ![](images/Skjermbilde 2023-10-31 kl. 08.35.48.png){width="795"}
 
 ## Statistikk
 
@@ -166,7 +157,7 @@ lavere BMI enn kvinner som ikke er gift.
 
 Som vi kan lese av tabellen ser man at man som både mann og kvinne får
 høyere lønn jo mer utdannning man har. Menn får fortsatt høyere lønn enn
-kvinner på bakgrunn avutdanning. Gjennomsnittlig BMI ligger jevnt som
+kvinner på bakgrunn av utdanning. Gjennomsnittlig BMI ligger jevnt som
 tidligere, bortsett fra at de både menn og kvinner som har 4år + med
 utdanning har lavere BMI enn de andre med lavere utdanning.
 
