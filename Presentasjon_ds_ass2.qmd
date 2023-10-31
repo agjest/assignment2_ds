@@ -32,6 +32,8 @@ CSL: apa-annotated-bibliography.csl
 
 -   sammenheng bmi og inntektsforskjell mellom menn/kvinner gitt edu_fac
 
+-   HøydeHighInc og HøydeZeroInc
+
 ## Hva er BMI?
 
 -   Body Mass Index --\> En måleenhet som beskriver forholdet mellom en
@@ -71,7 +73,7 @@ width="510"}
 
 -   Select -\> income, BMI og sex
 
-    ![](images/Skjermbilde 2023-10-31 kl. 08.25.32.png){width="686"}
+    ![](images/Skjermbilde%202023-10-31%20kl.%2008.25.32.png){width="686"}
 
 ![](images/Skjermbilde%202023-10-27%20kl.%2011.38.13.png){fig-align="center"
 width="522"}
@@ -106,11 +108,11 @@ forståelse av sammenhengen.
 
 -   Select -\> income, BMI, sex og married
 
-    ![](images/Skjermbilde 2023-10-31 kl. 08.31.30.png){width="742"}
+    ![](images/Skjermbilde%202023-10-31%20kl.%2008.31.30.png){width="742"}
 
     ## menn/kvinner gitt gift/ugift
 
-## ![](images/Skjermbilde 2023-10-31 kl. 08.34.43.png){width="788"}
+## ![](images/Skjermbilde%202023-10-31%20kl.%2008.34.43.png){width="788"}
 
 ## Statistikk
 
@@ -149,7 +151,7 @@ lavere BMI enn kvinner som ikke er gift.
 
 -   Select -\> income, BMI, sex, married og edu_fac
 
-    ![](images/Skjermbilde 2023-10-31 kl. 08.35.48.png){width="795"}
+    ![](images/Skjermbilde%202023-10-31%20kl.%2008.35.48.png){width="795"}
 
 ## Statistikk
 
@@ -252,3 +254,7 @@ høyere BMI de har, mens de med utdanning har høyere inntekt jo lavere
 BMI de har. Dette antyder at utdanningsnivå kan være en viktig faktor
 som påvirker forholdet mellom BMI og inntekt, med ulike mønstre for de
 med og uten utdanning.
+
+## References
+
+-   @allmennlege2019
