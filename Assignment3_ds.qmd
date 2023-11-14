@@ -5,6 +5,7 @@ editor: visual
 ---
 
 ## 
+<<<<<<< HEAD
 
 ```{r}
 library(readr)
@@ -101,3 +102,5 @@ Arbeid$arb_kom <- kollapse_kommuner(Arbeid$arb_kom)
 # Kollaps bo_kom til kategoriene
 Bosted$bo_kom <- kollapse_kommuner(Bosted$bo_kom)
 ```
+=======
+>>>>>>> 2b90765c11618e92116b27c53c009d4f966b1de0
