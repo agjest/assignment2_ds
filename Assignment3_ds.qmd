@@ -6,4 +6,98 @@ editor: visual
 
 ## 
 
-joiji
+```{r}
+library(readr)
+library(tidyverse)
+library(PxWebApiData)
+```
+
+```{r}
+pend_00_22_ssb_arbHland <- ApiData(
+  "https://data.ssb.no/api/v0/no/table/03321/", 
+  returnMetaFrames = TRUE
+)
+```
+
+```{r}
+pend_00_22_ssb_boHland <- ApiData(
+  "https://data.ssb.no/api/v0/no/table/03321/", 
+  returnMetaFrames = TRUE
+)
+```
+
+```{r}
+# Definer kommunenumrene for Haugalandet
+kommuner_på_Haugalandet <- c("1106", "1135", "1145", "1149", "1154", "1159", "1160", "4611", "4612", "1211", "1216")
+
+# Hent alle kommunenumrene i landet (du må erstatte dette med den faktiske listen)
+alle_kommuner_i_landet <- c(0101:9999)
+
+# Lager en vektor med årene fra 2000 til 2022
+år <- as.character(2000:2022)
+
+# Angir tabellnummeret (du må erstatte dette med det faktiske tabellnummeret)
+tabellnummer <- "03321"
+
+# Henter data for arbeidstakere som bor på Haugalandet og jobber i kommuner over hele landet
+pend_00_22_ssb_boHland <- PxWebApiData::ApiData12(
+  urlToData = tabellnummer,
+  ArbstedKomm = alle_kommuner_i_landet,
+  Bokommuen = kommuner_på_Haugalandet,
+  Tid = år
+)
+
+# Henter data for arbeidstakere som jobber på Haugalandet med bostedskommune fordelt over hele landet
+pend_00_22_ssb_arbHland <- PxWebApiData::ApiData12(
+  urlToData = tabellnummer,
+  ArbstedKomm = kommuner_på_Haugalandet,
+  Bokommuen = alle_kommuner_i_landet,
+  Tid = år
+)
+
+# Skriv ut rådataene for begge tilfellene
+print(pend_00_22_ssb_boHland)
+print(pend_00_22_ssb_arbHland)
+```
+
+```{r}
+Arbeid <- pend_00_22_ssb_arbHland |> 
+  select(aar = år, arb_kom = arbeidsstedskommune, bo_kom = Bokommuen, pendlere = value)
+```
+
+```{r}
+Bosted <- pend_00_22_ssb_boHland |> 
+  select(aar = år, bo_kom = bostedskommune, arb_kom = ArbstedKomm, pendlere = value)
+```
+
+```{r}
+# Definer en funksjon for å kollapse kategoriene
+kollapse_kommuner <- function(kommune_var) {
+  if (!is.factor(kommune_var)) {
+    warning("Variabelen er ikke en faktor, konverterer til faktor.")
+    kommune_var <- as.factor(kommune_var)
+  }
+
+  # Fjern årstall i parentes fra kommune-navnene
+  kommune_var <- gsub("\\s*\\(.*\\)", "", kommune_var)
+
+  fct_collapse(
+    fct_recode(
+      kommune_var,
+      "Ølen" = "Vindafjord"
+    ),
+    "Haugesund" = "Haugesund", 
+    "Karmøy" = "Karmøy",
+    "Sauda" = "Sauda",
+    "Bokn" = "Bokn",
+    "Tysvær" = "Tysvær",
+    "Andre" = c("Alle andre kommuner utenfor Haugalandet")
+  )
+}
+
+# Kollaps arb_kom til kategoriene
+Arbeid$arb_kom <- kollapse_kommuner(Arbeid$arb_kom)
+
+# Kollaps bo_kom til kategoriene
+Bosted$bo_kom <- kollapse_kommuner(Bosted$bo_kom)
+```
