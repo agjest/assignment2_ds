@@ -38,7 +38,7 @@ bibliography: references.bib
 ## Hva er BMI?
 
 -   Body Mass Index --\> En måleenhet som beskriver forholdet mellom en
-    persons høyde og vekt @allmennlege2019
+    persons høyde og vekt ((@allmennlege2019 )
 
 -   Vurdere om en person er:
 
