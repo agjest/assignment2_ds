@@ -2,18 +2,31 @@
 title: "Assignment3_ds"
 format: html
 editor: visual
+bibliography: my_bib.bib
 ---
 
-## 
-<<<<<<< HEAD
+## **Assignment 3 -** **Pendling**
 
 ```{r}
-library(readr)
+#| label: setup 
+#| echo: false
+#| output: false
+#| message: false
 library(tidyverse)
+library(tidyselect)
+library(lubridate)
 library(PxWebApiData)
+library(flextable)
+library(readr)
 ```
 
+### Importere data
+
+Dataene er hente fra SSB sin statistikktabell 03321, «*Sysselsatte (15-74 år), etter arbeidssteds- og bostedskommune. Pendlingsstrømmer. 4. kvartal (K) 2000 - 2022*» **()**.
+Dataene fra SSB har vi hente direkte inn i R via pakken `PxWebApiData`, som gir oss tilgang til SSB via en api:
+
 ```{r}
+# Henter data for arbeidstakere som jobber på Haugalandet med bostedskommune fordelt over hele landet
 pend_00_22_ssb_arbHland <- ApiData(
   "https://data.ssb.no/api/v0/no/table/03321/", 
   returnMetaFrames = TRUE
@@ -21,13 +34,19 @@ pend_00_22_ssb_arbHland <- ApiData(
 ```
 
 ```{r}
+# Henter data for arbeidstakere som bor på Haugalandet og jobber i kommuner over hele landet
 pend_00_22_ssb_boHland <- ApiData(
   "https://data.ssb.no/api/v0/no/table/03321/", 
   returnMetaFrames = TRUE
 )
 ```
 
+Videre har vi hentet arbeidstakere som bor på Haugalandet, jobber i kommuner over hele landet for perioden 2000-2022.
+Vi har benytt funksjonen `PxWebApiData::ApiData12()` med ulike argumenter.
+Det samme gjorde vi for antall arbeidstakere som jobber på Haugalandet med bosteds-kommune fordelt over hele landet
+
 ```{r}
+#| cache: true
 # Definer kommunenumrene for Haugalandet
 kommuner_på_Haugalandet <- c("1106", "1135", "1145", "1149", "1154", "1159", "1160", "4611", "4612", "1211", "1216")
 
@@ -40,14 +59,6 @@ alle_kommuner_i_landet <- c(0101:9999)
 # Angir tabellnummeret (du må erstatte dette med det faktiske tabellnummeret)
 tabellnummer <- "03321"
 
-# Henter data for arbeidstakere som bor på Haugalandet og jobber i kommuner over hele landet
-pend_00_22_ssb_boHland <- PxWebApiData::ApiData12(
-  urlToData = tabellnummer,
-  ArbstedKomm = alle_kommuner_i_landet,
-  Bokommuen = kommuner_på_Haugalandet,
-  Tid = år
-)
-
 # Henter data for arbeidstakere som jobber på Haugalandet med bostedskommune fordelt over hele landet
 pend_00_22_ssb_arbHland <- PxWebApiData::ApiData12(
   urlToData = tabellnummer,
@@ -56,10 +67,24 @@ pend_00_22_ssb_arbHland <- PxWebApiData::ApiData12(
   Tid = år
 )
 
+# Henter data for arbeidstakere som bor på Haugalandet og jobber i kommuner over hele landet
+pend_00_22_ssb_boHland <- PxWebApiData::ApiData12(
+  urlToData = tabellnummer,
+  ArbstedKomm = alle_kommuner_i_landet,
+  Bokommuen = kommuner_på_Haugalandet,
+  Tid = år
+)
+
+
 # Skriv ut rådataene for begge tilfellene
 print(pend_00_22_ssb_boHland)
 print(pend_00_22_ssb_arbHland)
 ```
+
+Derretter lager vi vår egen reduserte versjon av datasettene hvor vi kunn ønsker å ta med: år, arbeidsstedskommune, bokommune og antall pendlere.
+Dette gjelder for begge datasettene.
+
+**\--\> "*Vi bryr oss altså ikke om kommunenummer i det videre arbeidet og jobber bare med kommunenavn som kategorivariabler*"??**?m
 
 ```{r}
 Arbeid <- pend_00_22_ssb_arbHland |> 
@@ -70,6 +95,8 @@ Arbeid <- pend_00_22_ssb_arbHland |>
 Bosted <- pend_00_22_ssb_boHland |> 
   select(aar = år, bo_kom = bostedskommune, arb_kom = ArbstedKomm, pendlere = value)
 ```
+
+\--\> "***Vi må så konvertere `arb_kom` og `bo_kom` til kategorivariabler vha. `fct()` funksjonen. Hver av disse variablene skal så kollapses til kategoriene `Haugesund`, `Sauda`, `Bokn`, `Tysvær`, `Karmøy`, `Vindafjord` og `Ølen`. Vi gjør dette ved å bruke `fct_collapse()` funksjonen. Vi må også sørge for at hhv. `Ølen` og `Vindafjord` blir slått sammen til en kategori fra sine «gamle» versjoner. Vi samler kommunene utenfor Haugalandet i kategorien «Andre» vha. argumentet `other_level = "Andre"`. Overskriv `arb_kom` og `bo_kom` med sine kollapsede versjoner." ???***
 
 ```{r}
 # Definer en funksjon for å kollapse kategoriene
@@ -102,5 +129,3 @@ Arbeid$arb_kom <- kollapse_kommuner(Arbeid$arb_kom)
 # Kollaps bo_kom til kategoriene
 Bosted$bo_kom <- kollapse_kommuner(Bosted$bo_kom)
 ```
-=======
->>>>>>> 2b90765c11618e92116b27c53c009d4f966b1de0
