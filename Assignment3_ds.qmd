@@ -56,7 +56,7 @@ alle_kommuner_i_landet <- c(0101:9999)
 # Lager en vektor med årene fra 2000 til 2022
 år <- as.character(2000:2022)
 
-# Angir tabellnummeret (du må erstatte dette med det faktiske tabellnummeret)
+# Angir tabellnummeret 
 tabellnummer <- "03321"
 
 # Henter data for arbeidstakere som jobber på Haugalandet med bostedskommune fordelt over hele landet
@@ -84,48 +84,55 @@ print(pend_00_22_ssb_arbHland)
 Derretter lager vi vår egen reduserte versjon av datasettene hvor vi kunn ønsker å ta med: år, arbeidsstedskommune, bokommune og antall pendlere.
 Dette gjelder for begge datasettene.
 
-**\--\> "*Vi bryr oss altså ikke om kommunenummer i det videre arbeidet og jobber bare med kommunenavn som kategorivariabler*"??**?m
+**\--\> "*Vi bryr oss altså ikke om kommunenummer i det videre arbeidet og jobber bare med kommunenavn som kategorivariabler*"??**?
 
 ```{r}
 Arbeid <- pend_00_22_ssb_arbHland |> 
-  select(aar = år, arb_kom = arbeidsstedskommune, bo_kom = Bokommuen, pendlere = value)
+  select(aar = år, arb_kom = arbeidsstedskommune, bo_kom = bostedskommune, pendlere = value)
 ```
 
 ```{r}
 Bosted <- pend_00_22_ssb_boHland |> 
-  select(aar = år, bo_kom = bostedskommune, arb_kom = ArbstedKomm, pendlere = value)
+  select(aar = år, bo_kom = bostedskommune, arb_kom = arbeidsstedskommune, pendlere = value)
 ```
 
 \--\> "***Vi må så konvertere `arb_kom` og `bo_kom` til kategorivariabler vha. `fct()` funksjonen. Hver av disse variablene skal så kollapses til kategoriene `Haugesund`, `Sauda`, `Bokn`, `Tysvær`, `Karmøy`, `Vindafjord` og `Ølen`. Vi gjør dette ved å bruke `fct_collapse()` funksjonen. Vi må også sørge for at hhv. `Ølen` og `Vindafjord` blir slått sammen til en kategori fra sine «gamle» versjoner. Vi samler kommunene utenfor Haugalandet i kategorien «Andre» vha. argumentet `other_level = "Andre"`. Overskriv `arb_kom` og `bo_kom` med sine kollapsede versjoner." ???***
 
 ```{r}
-# Definer en funksjon for å kollapse kategoriene
-kollapse_kommuner <- function(kommune_var) {
-  if (!is.factor(kommune_var)) {
-    warning("Variabelen er ikke en faktor, konverterer til faktor.")
-    kommune_var <- as.factor(kommune_var)
-  }
+Arbeid1 <- Arbeid |> 
+  mutate(
+    arb_kom = fct(arb_kom),
+    arb_kom = fct_collapse(
+      .f = arb_kom,
+      "Haugesund" = "Haugesund",
+      "Sveio" = c("Sveio", "Sveio (-2019)"),
+      "Karmøy" = "Karmøy",
+      "Bokn" = "Bokn",
+      "Tysvær" = "Tysvær",
+      "Sauda" = "Sauda",
+      "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
+      "Etne" = c("Etne (-2019)", "Etne"),
+      other_level = c("Andre")
+    )
+  ) 
+```
 
-  # Fjern årstall i parentes fra kommune-navnene
-  kommune_var <- gsub("\\s*\\(.*\\)", "", kommune_var)
-
-  fct_collapse(
-    fct_recode(
-      kommune_var,
-      "Ølen" = "Vindafjord"
-    ),
-    "Haugesund" = "Haugesund", 
-    "Karmøy" = "Karmøy",
-    "Sauda" = "Sauda",
-    "Bokn" = "Bokn",
-    "Tysvær" = "Tysvær",
-    "Andre" = c("Alle andre kommuner utenfor Haugalandet")
-  )
-}
-
-# Kollaps arb_kom til kategoriene
-Arbeid$arb_kom <- kollapse_kommuner(Arbeid$arb_kom)
-
-# Kollaps bo_kom til kategoriene
-Bosted$bo_kom <- kollapse_kommuner(Bosted$bo_kom)
+```{r}
+Bosted1 <- Bosted |> 
+  mutate(
+    bo_kom = fct(bo_kom),
+    arb_kom = fct(arb_kom),
+    bo_kom = fct_collapse(
+      .f = bo_kom,
+      "Haugesund" = "Haugesund",
+      "Sveio" = c("Sveio", "Sveio (-2019)"),
+      "Karmøy" = "Karmøy",
+      "Bokn" = "Bokn",
+      "Tysvær" = "Tysvær",
+      "Sauda" = "Sauda",
+      "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
+      "Etne" = c("Etne (-2019)", "Etne"),
+      other_level = c("Andre")
+    )
+  ) 
 ```
