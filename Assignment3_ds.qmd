@@ -22,6 +22,7 @@ library(lubridate)
 library(PxWebApiData)
 library(flextable)
 library(readr)
+library(dplyr)
 ```
 
 ### Importere data
@@ -52,10 +53,7 @@ Det samme gjorde vi for antall arbeidstakere som jobber på Haugalandet med bost
 ```{r}
 #| cache: true
 # Definer kommunenumrene for Haugalandet
-kommuner_på_Haugalandet <- c("1106", "1135", "1145", "1149", "1154", "1159", "1160", "4611", "4612", "1211", "1216")
-
-# Hent alle kommunenumrene i landet (du må erstatte dette med den faktiske listen)
-alle_kommuner_i_landet <- c(0101:9999)
+kommuner_på_Haugalandet <- c("1106", "1135", "1145", "1146", "1149", "1154", "1159", "1160", "4611", "4612", "1211", "1216")
 
 # Lager en vektor med årene fra 2000 til 2022
 år <- as.character(2000:2022)
@@ -67,14 +65,14 @@ tabellnummer <- "03321"
 pend_00_22_ssb_arbHland <- PxWebApiData::ApiData12(
   urlToData = tabellnummer,
   ArbstedKomm = kommuner_på_Haugalandet,
-  Bokommuen = alle_kommuner_i_landet,
+  Bokommuen = list('*'),
   Tid = år
 )
 
 # Henter data for arbeidstakere som bor på Haugalandet og jobber i kommuner over hele landet
 pend_00_22_ssb_boHland <- PxWebApiData::ApiData12(
   urlToData = tabellnummer,
-  ArbstedKomm = alle_kommuner_i_landet,
+  ArbstedKomm = list('*'),
   Bokommuen = kommuner_på_Haugalandet,
   Tid = år
 )
@@ -103,30 +101,11 @@ Bosted <- pend_00_22_ssb_boHland |>
 \--\> "***Vi må så konvertere `arb_kom` og `bo_kom` til kategorivariabler vha. `fct()` funksjonen. Hver av disse variablene skal så kollapses til kategoriene `Haugesund`, `Sauda`, `Bokn`, `Tysvær`, `Karmøy`, `Vindafjord` og `Ølen`. Vi gjør dette ved å bruke `fct_collapse()` funksjonen. Vi må også sørge for at hhv. `Ølen` og `Vindafjord` blir slått sammen til en kategori fra sine «gamle» versjoner. Vi samler kommunene utenfor Haugalandet i kategorien «Andre» vha. argumentet `other_level = "Andre"`. Overskriv `arb_kom` og `bo_kom` med sine kollapsede versjoner." ???***
 
 ```{r}
-Arbeid1 <- Arbeid |> 
+Arbeid <- Arbeid |> 
   mutate(
     arb_kom = fct(arb_kom),
-    arb_kom = fct_collapse(
-      .f = arb_kom,
-      "Haugesund" = "Haugesund",
-      "Sveio" = c("Sveio", "Sveio (-2019)"),
-      "Karmøy" = "Karmøy",
-      "Bokn" = "Bokn",
-      "Tysvær" = "Tysvær",
-      "Sauda" = "Sauda",
-      "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
-      "Etne" = c("Etne (-2019)", "Etne"),
-      other_level = c("Andre")
-    )
-  ) 
-```
-
-```{r}
-Bosted1 <- Bosted |> 
-  mutate(
     bo_kom = fct(bo_kom),
-    arb_kom = fct(arb_kom),
-    bo_kom = fct_collapse(
+    arb_kom = fct_collapse(
       .f = bo_kom,
       "Haugesund" = "Haugesund",
       "Sveio" = c("Sveio", "Sveio (-2019)"),
@@ -136,12 +115,84 @@ Bosted1 <- Bosted |>
       "Sauda" = "Sauda",
       "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
       "Etne" = c("Etne (-2019)", "Etne"),
-      other_level = c("Andre")
+      other_level = "Andre"
     )
   ) 
 ```
 
 ```{r}
+<<<<<<< HEAD
 #plukke ut ett element
 x[[14]]
+=======
+Bosted <- Bosted |> 
+  mutate(
+    bo_kom = fct(bo_kom),
+    arb_kom = fct(arb_kom),
+    bo_kom = fct_collapse(
+      .f = arb_kom,
+      "Haugesund" = "Haugesund",
+      "Sveio" = c("Sveio", "Sveio (-2019)"),
+      "Karmøy" = "Karmøy",
+      "Bokn" = "Bokn",
+      "Tysvær" = "Tysvær",
+      "Sauda" = "Sauda",
+      "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
+      "Etne" = c("Etne (-2019)", "Etne"),
+      other_level = "Andre"
+    )
+  ) 
+```
+
+```{r}
+# For Arbeid
+Arbeid <- Arbeid %>%
+  filter(arb_kom %in% c("Haugesund", "Sveio", "Karmøy", "Bokn", "Tysvær", "Sauda", "Vindafjord", "Etne", "Andre")) %>%
+  group_by(aar, bo_kom, arb_kom) %>%
+  summarize(pendlere = sum(pendlere))
+```
+
+```{r}
+# For Bosted
+Bosted <- Bosted %>%
+  filter(bo_kom %in% c("Haugesund", "Sveio", "Karmøy", "Bokn", "Tysvær", "Sauda", "Vindafjord", "Etne", "Andre")) %>%
+  group_by(aar, bo_kom, arb_kom) %>%
+  summarize(pendlere = sum(pendlere))
+```
+
+```{r}
+# Slå sammen datasettene med full_join
+pmat_long <- full_join(Bosted, Arbeid, by = c("aar", "bo_kom", "arb_kom"))
+```
+
+```{r}
+pmat_long <- full_join(Bosted1_result, Arbeid1_result, by = c("aar", "bo_kom", "arb_kom")) %>%
+  ungroup() %>%
+  mutate(across(c("arb_kom", "bo_kom"), as.character))
+
+```
+
+```{r}
+pmat_long <- pmat_long %>%
+  mutate(pendlere = coalesce(pendlere.x, pendlere.y)) %>%
+  filter(!is.na(pendlere) & pendlere != 0) %>%
+  select(-pendlere.x, -pendlere.y)
+```
+
+```{r}
+pmat_long_temp <- pmat_long %>%
+  group_by(aar, bo_kom) %>%
+  mutate(bo_percent = (pendlere / sum(pendlere)) * 100) %>%
+  ungroup() %>%
+  group_by(aar, arb_kom) %>%
+  mutate(arb_percent = (pendlere / sum(pendlere)) * 100) %>%
+  ungroup() %>%
+  arrange(aar, arb_kom, bo_kom)
+
+pmat_long <- pmat_long_temp
+```
+
+```{r}
+print(pmat_long_temp)
+>>>>>>> a06fcd10db41a21857d2028fe2a49d5d171bcc7b
 ```
