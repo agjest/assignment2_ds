@@ -3,12 +3,12 @@
 ```
 
 ---
-title: "Assignment3_ds"
+title: "Assignment3 Data Science"
 format: html
 editor: visual
 ---
 
-## **Assignment 3 -** **Pendling**
+## **Pendling**
 
 ```{r}
 #| label: setup 
@@ -83,8 +83,6 @@ pend_00_22_ssb_boHland <- PxWebApiData::ApiData12(
 Derretter lager vi vår egen reduserte versjon av datasettene hvor vi kunn ønsker å ta med: år, arbeidsstedskommune, bokommune og antall pendlere.
 Dette gjelder for begge datasettene.
 
-**\--\> "*Vi bryr oss altså ikke om kommunenummer i det videre arbeidet og jobber bare med kommunenavn som kategorivariabler*"??**?
-
 ```{r}
 #| echo: FALSE
 Arbeid <- pend_00_22_ssb_arbHland |> 
@@ -98,8 +96,6 @@ Bosted <- pend_00_22_ssb_boHland |>
   select(aar = år, bo_kom = bostedskommune, arb_kom = arbeidsstedskommune, pendlere = value) |> 
   as_tibble()
 ```
-
-\--\> "***Vi må så konvertere `arb_kom` og `bo_kom` til kategorivariabler vha. `fct()` funksjonen. Hver av disse variablene skal så kollapses til kategoriene `Haugesund`, `Sauda`, `Bokn`, `Tysvær`, `Karmøy`, `Vindafjord` og `Ølen`. Vi gjør dette ved å bruke `fct_collapse()` funksjonen. Vi må også sørge for at hhv. `Ølen` og `Vindafjord` blir slått sammen til en kategori fra sine «gamle» versjoner. Vi samler kommunene utenfor Haugalandet i kategorien «Andre» vha. argumentet `other_level = "Andre"`. Overskriv `arb_kom` og `bo_kom` med sine kollapsede versjoner." ???***
 
 ```{r}
 #| echo: FALSE
@@ -226,7 +222,7 @@ pmat_long <- pmat_long %>%
 print(pmat_long)
 ```
 
-Rekkefølge kommune
+### **Pendlematrise**
 
 ```{r}
 #| echo: FALSE
@@ -270,7 +266,7 @@ H2000 |>
 
 ## Spørsmål
 
-### Spørsmål vedrørende pendle/andels-matrisene for 2000
+### Spørsmål vedrørende pendle/andels-matrisene for 2000:
 
 1.  121 stk.
 
@@ -300,8 +296,6 @@ print(antall_bodde_i_bokn)
 oppg.4 <- 15 / 410 * 100
 print(oppg.4)
 ```
-
-<!-- -->
 
 5.  Det var 8,622% som jobbet i Sveio i 2000 bodde i Haugesund kommune.
 
@@ -335,7 +329,7 @@ print(oppg.4)
     print(oppg.5)
     ```
 
-### **Spørsmål vedrørende pendle/andels-matrisene for 2012**
+### **Spørsmål vedrørende pendle/andels-matrisene for 2012:**
 
 ```{r}
 #| echo: FALSE
@@ -428,7 +422,7 @@ H2012 |>
     print(oppg.10)
     ```
 
-### **Spørsmål vedrørende pendle/andels-matrisene for 2022**
+### **Spørsmål vedrørende pendle/andels-matrisene for 2022:**
 
 ```{r}
 #| echo: FALSE
@@ -503,7 +497,6 @@ H2022 |>
 #| echo: FALSE
 #| label: fig-boKarmoy
 #| fig-cap: "Arbeidssted for arbeidstakere som bor i Karmøy kommune, 2000-2022.Arbeidssted Karmøy er tatt vekk."
-# Karmøy utelatt
 pmat_long |> 
   filter(bo_kom == "Karmøy" & !arb_kom == "Karmøy") |>
   mutate(
@@ -579,7 +572,7 @@ pmat_long |>
 
 ```{r}
 #| echo: FALSE
-#| label: fig-boKarmoyB
+#| label: fig-boTysvær
 #| fig-cap: "Arbeidssted for arbeidstakere som bor i Tysvær kommune, 2000-2022.Arbeidssted Tysvær er tatt vekk."
 #Tysvær utelatt
 pmat_long |> 
@@ -602,3 +595,33 @@ pmat_long |>
     legend.position = "bottom"
     )
 ```
+
+Kommentar fra Plottene ang.
+det såkalte T-sambandet som åpnet i 2013.
+T-sambandet er et veiprosjekt for å knytte Haugesund-regionen bedre sammen.
+Ny veiforbindelse mellom kommunene Haugesund, Karmøy og Tysvær er lagt til grunn som hovedmål:
+
+@fig-boKarmoy : Det er Lite effekt på pendlermønsteret fra de som bor i karmøy i 2013.
+Bokn har en svak nedgang fra år 2013 frem til år 2016 ca.
+Dette syns vi er litt rart da vi trodde at de som pendler mellom Karmøy og Bokn skulle ha en positiv økning etter åpningen av T-sambandet (?).
+Videre ser vi også at Tysvær har en veldig svak økning fra år 2013 og frem til 2022.
+
+@fig-boHaugesund : Det er også lite effekt på pendlermønsteret fra de som bor i Haugesund i 2013.
+Vi ser en svak nedgang i Bokn her også, men Sveio har litt stigning, noe som ikke har noe sammenheng med T-forbindelsen.
+Det er en veldig svak økning i Karmøy kommune også.
+
+@fig-boBokn : For de som bor i Bokn kommune i 2013 er det heller ikke mye effekt på pendlermønsteret med tanke på T-forbindelsen.
+Karmøy har en svak gradvis økning.
+Det samme gjelder for vindafjord også.
+Tysvær har derrimot nedgang fra år 2013.
+
+@fig-boTysvær : For de som bor i Tysvær kommune i 2013 er det Karmøy som har en svak gradvis økning.
+Bokn hadde en brå økning fra ca år 2014, men gikk fort ned igjen etter ca.
+2016.
+
+## Oppsummering/Konklusjon: 
+
+Det ser ikke ut som om at T-forbindelsen som åpnet i 2013 har hatt noe stor innvikning på pendlemønsteret mellom kommunene på Haugalandet.
+Man skulle tro at de kommunene som skulle ha noe positiv innvivirkning av T-sambandet var Haugesund, Karmøy og Tysvær, men det viste seg at disse gjerne hadde negativ innvirkning ut i fra plottene våres.
+Dette kommer nok av andre/tilfeldige observersjoner/grunner.
+Vi kan derfor konkludere med at det ikke er noen effekt på pendlemønsteret mellom de fire kommunene fra dette prosjektet (T-sambandet).
