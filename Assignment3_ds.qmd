@@ -136,7 +136,6 @@ Arbeid <- Arbeid |>
 ```
 
 ```{r}
-<<<<<<< HEAD
 #plukke ut ett element
 x[[14]]
 =======
@@ -219,12 +218,9 @@ pmat_long <- pmat_long %>%
 ```
 
 ```{r}
-<<<<<<< HEAD
 print(pmat_long)
-=======
 print(pmat_long_temp)
->>>>>>> a06fcd10db41a21857d2028fe2a49d5d171bcc7b
->>>>>>> c4b6fc2a3cb1daa047da3d6946cd442fa267bc27
+
 ```
 
 Rekkefølge kommune
@@ -269,10 +265,96 @@ H2000 |>
   theme_booktabs()
 ```
 
-## Spørsmål 
+## Spørsmål
 
-### Spørsmål vedrørende pendle/andels-matrisene for 2000 
+### Spørsmål vedrørende pendle/andels-matrisene for 2000
 
 1.  121 stk.
+
 2.  Ingen observersjon = 0 stk.
-3.  
+
+3.   Det er 0,081% som bodde i Karmøy kommune i 2000 og jobbet i Bokn kommune.
+
+    ```{r}
+    antall_bodde_i_karmoy <- pmat_long %>%
+      filter(aar == "2000" & bo_kom == "Karmøy") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_bodde_i_karmoy)
+    oppg.3 <- 14 / 17281 * 100
+    print(andel)
+
+    ```
+
+    4.  Det var 3,658% som bodde i Bokn kommune i 2000 jobbet i Karmøy kommune.
+
+    ```{r}
+    antall_bodde_i_bokn <- pmat_long %>%
+      filter(aar == "2000" & bo_kom == "Bokn") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_bodde_i_bokn)
+    oppg.4 <- 15 / 410 * 100
+    print(oppg.4)
+    ```
+
+```{=html}
+<!-- -->
+```
+5.  Det var 8,622% som jobbet i Sveio i 2000 bodde i Haugesund kommune.
+
+    ```{r}
+    antall_jobbet_i_Sveio <- pmat_long %>%
+      filter(aar == "2000" & arb_kom == "Sveio") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_jobbet_i_Sveio)
+    oppg.5 <- 97 / 1125 * 100
+    print(oppg.5)
+    ```
+
+6.  Det er 1,688% som jobbet i Sveio i 2000 bodde i Tysvær kommune
+
+    ```{r}
+    oppg.6 <- 19 / 1125 * 100
+    print(oppg.6)
+    ```
+
+7.  Det er 1,7% som jobbet i Haugesund i 2000 bodde i Vindafjord kommune
+
+    ```{r}
+    antall_jobbet_i_Hgsd <- pmat_long %>%
+      filter(aar == "2000" & arb_kom == "Haugesund") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_jobbet_i_Hgsd)
+    oppg.5 <- 298 / 17526 * 100
+    print(oppg.5)
+    ```
+
+### **Spørsmål vedrørende pendle/andels-matrisene for 2012**
+
+```{r}
+# Pendlermatrise for Haugalandet år 2012
+H2012 <- pmat_long |> 
+  filter(aar == 2012) |> 
+  select(bo_kom, arb_kom, pendlere) |> 
+  pivot_wider(
+    names_from = arb_kom,
+    values_from = pendlere
+  ) |> 
+  arrange(fct(bo_kom, levels = ordKom[-1])) |> 
+  select(all_of(ordKom)) |> 
+  rename(`Bo kom - Arb kom` = bo_kom)
+```
+
+```{r}
+#| label: tbl-H2012
+#| tbl-cap: "Pendlematrise for Haugalandet år 2012."
+H2012 |> 
+  flextable() |> 
+  fit_to_width(max_width = 6.268, inc = 1L, max_iter = 20, unit = "in") |> 
+  line_spacing(space = 0,
+              part = "body"
+              ) %>% 
+  hrule(rule = "exact")  %>% 
+  height_all(height = 5, part = "all", unit = "mm") |> 
+  padding(padding.top = 1, padding.bottom = 2, part = "all") %>% 
+  theme_booktabs()
+```
