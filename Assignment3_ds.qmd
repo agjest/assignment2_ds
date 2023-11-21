@@ -90,12 +90,14 @@ Dette gjelder for begge datasettene.
 
 ```{r}
 Arbeid <- pend_00_22_ssb_arbHland |> 
-  select(aar = år, arb_kom = arbeidsstedskommune, bo_kom = bostedskommune, pendlere = value)
+  select(aar = år, arb_kom = arbeidsstedskommune, bo_kom = bostedskommune, pendlere = value) |> 
+  as_tibble()
 ```
 
 ```{r}
 Bosted <- pend_00_22_ssb_boHland |> 
-  select(aar = år, bo_kom = bostedskommune, arb_kom = arbeidsstedskommune, pendlere = value)
+  select(aar = år, bo_kom = bostedskommune, arb_kom = arbeidsstedskommune, pendlere = value) |> 
+  as_tibble()
 ```
 
 \--\> "***Vi må så konvertere `arb_kom` og `bo_kom` til kategorivariabler vha. `fct()` funksjonen. Hver av disse variablene skal så kollapses til kategoriene `Haugesund`, `Sauda`, `Bokn`, `Tysvær`, `Karmøy`, `Vindafjord` og `Ølen`. Vi gjør dette ved å bruke `fct_collapse()` funksjonen. Vi må også sørge for at hhv. `Ølen` og `Vindafjord` blir slått sammen til en kategori fra sine «gamle» versjoner. Vi samler kommunene utenfor Haugalandet i kategorien «Andre» vha. argumentet `other_level = "Andre"`. Overskriv `arb_kom` og `bo_kom` med sine kollapsede versjoner." ???***
@@ -104,8 +106,20 @@ Bosted <- pend_00_22_ssb_boHland |>
 Arbeid <- Arbeid |> 
   mutate(
     arb_kom = fct(arb_kom),
-    bo_kom = fct(bo_kom),
     arb_kom = fct_collapse(
+      .f = arb_kom,
+      "Haugesund" = "Haugesund",
+      "Sveio" = c("Sveio", "Sveio (-2019)"),
+      "Karmøy" = "Karmøy",
+      "Bokn" = "Bokn",
+      "Tysvær" = "Tysvær",
+      "Sauda" = "Sauda",
+      "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
+      "Etne" = c("Etne (-2019)", "Etne"),
+      other_level = "Andre"
+    ), 
+    bo_kom = fct(bo_kom),
+    bo_kom = fct_collapse(
       .f = bo_kom,
       "Haugesund" = "Haugesund",
       "Sveio" = c("Sveio", "Sveio (-2019)"),
@@ -117,15 +131,28 @@ Arbeid <- Arbeid |>
       "Etne" = c("Etne (-2019)", "Etne"),
       other_level = "Andre"
     )
-  ) 
+  ) |> 
+  arrange(aar,arb_kom, bo_kom)
 ```
 
 ```{r}
 Bosted <- Bosted |> 
   mutate(
     bo_kom = fct(bo_kom),
-    arb_kom = fct(arb_kom),
     bo_kom = fct_collapse(
+      .f = bo_kom,
+      "Haugesund" = "Haugesund",
+      "Sveio" = c("Sveio", "Sveio (-2019)"),
+      "Karmøy" = "Karmøy",
+      "Bokn" = "Bokn",
+      "Tysvær" = "Tysvær",
+      "Sauda" = "Sauda",
+      "Vindafjord" = c("Vindafjord", "Vindafjord (1965-2005)", "Ølen (2002-2005)"),
+      "Etne" = c("Etne (-2019)", "Etne"),
+      other_level = "Andre"
+    ),
+    arb_kom = fct(arb_kom),
+    arb_kom = fct_collapse(
       .f = arb_kom,
       "Haugesund" = "Haugesund",
       "Sveio" = c("Sveio", "Sveio (-2019)"),
@@ -137,7 +164,8 @@ Bosted <- Bosted |>
       "Etne" = c("Etne (-2019)", "Etne"),
       other_level = "Andre"
     )
-  ) 
+  ) |> 
+  arrange(aar,arb_kom, bo_kom)
 ```
 
 ```{r}
@@ -162,7 +190,7 @@ pmat_long <- full_join(Bosted, Arbeid, by = c("aar", "bo_kom", "arb_kom"))
 ```
 
 ```{r}
-pmat_long <- full_join(Bosted1_result, Arbeid1_result, by = c("aar", "bo_kom", "arb_kom")) %>%
+pmat_long <- full_join(Bosted, Arbeid, by = c("aar", "bo_kom", "arb_kom")) %>%
   ungroup() %>%
   mutate(across(c("arb_kom", "bo_kom"), as.character))
 
@@ -176,7 +204,7 @@ pmat_long <- pmat_long %>%
 ```
 
 ```{r}
-pmat_long_temp <- pmat_long %>%
+pmat_long <- pmat_long %>%
   group_by(aar, bo_kom) %>%
   mutate(bo_percent = (pendlere / sum(pendlere)) * 100) %>%
   ungroup() %>%
@@ -184,10 +212,58 @@ pmat_long_temp <- pmat_long %>%
   mutate(arb_percent = (pendlere / sum(pendlere)) * 100) %>%
   ungroup() %>%
   arrange(aar, arb_kom, bo_kom)
-
-pmat_long <- pmat_long_temp
 ```
 
 ```{r}
-print(pmat_long_temp)
+print(pmat_long)
 ```
+
+Rekkefølge kommune
+
+```{r}
+ordKom <- c("bo_kom" , "Haugesund", "Karmøy", "Tysvær", 
+            "Sveio", "Bokn", "Vindafjord", "Sauda", 
+            "Etne", "Andre")
+```
+
+```{r}
+# Pendlermatrise for Haugalandet år 2000
+H2000 <- pmat_long |> 
+  filter(aar == 2000) |> 
+  select(bo_kom, arb_kom, pendlere) |> 
+  pivot_wider(
+    names_from = arb_kom,
+    values_from = pendlere
+  ) |> 
+  arrange(fct(bo_kom, levels = ordKom[-1])) |> 
+  select(all_of(ordKom)) |> 
+  rename(`Bo kom - Arb kom` = bo_kom)
+
+```
+
+```{r}
+# Gjøre pendlermatrisen litt finere
+```
+
+```{r}
+#| label: tbl-H2000
+#| tbl-cap: "Pendlematrise for Haugalandet år 2000."
+H2000 |> 
+  flextable() |> 
+  fit_to_width(max_width = 6.268, inc = 1L, max_iter = 20, unit = "in") |> 
+  line_spacing(space = 0,
+              part = "body"
+              ) %>% 
+  hrule(rule = "exact")  %>% 
+  height_all(height = 5, part = "all", unit = "mm") |> 
+  padding(padding.top = 1, padding.bottom = 2, part = "all") %>% 
+  theme_booktabs()
+```
+
+## Spørsmål 
+
+### Spørsmål vedrørende pendle/andels-matrisene for 2000 
+
+1.  121 stk.
+2.  Ingen observersjon = 0 stk.
+3.  
