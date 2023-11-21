@@ -6,7 +6,6 @@
 title: "Assignment3_ds"
 format: html
 editor: visual
-bibliography: my_bib.bib
 ---
 
 ## **Assignment 3 -** **Pendling**
@@ -31,6 +30,7 @@ Dataene er hente fra SSB sin statistikktabell 03321, «*Sysselsatte (15-74 år),
 Dataene fra SSB har vi hente direkte inn i R via pakken `PxWebApiData`, som gir oss tilgang til SSB via en api:
 
 ```{r}
+#| echo: FALSE
 # Henter data for arbeidstakere som jobber på Haugalandet med bostedskommune fordelt over hele landet
 pend_00_22_ssb_arbHland <- ApiData(
   "https://data.ssb.no/api/v0/no/table/03321/", 
@@ -39,6 +39,7 @@ pend_00_22_ssb_arbHland <- ApiData(
 ```
 
 ```{r}
+#| echo: FALSE
 # Henter data for arbeidstakere som bor på Haugalandet og jobber i kommuner over hele landet
 pend_00_22_ssb_boHland <- ApiData(
   "https://data.ssb.no/api/v0/no/table/03321/", 
@@ -52,6 +53,7 @@ Det samme gjorde vi for antall arbeidstakere som jobber på Haugalandet med bost
 
 ```{r}
 #| cache: true
+#| echo: FALSE
 # Definer kommunenumrene for Haugalandet
 kommuner_på_Haugalandet <- c("1106", "1135", "1145", "1146", "1149", "1154", "1159", "1160", "4611", "4612", "1211", "1216")
 
@@ -76,11 +78,6 @@ pend_00_22_ssb_boHland <- PxWebApiData::ApiData12(
   Bokommuen = kommuner_på_Haugalandet,
   Tid = år
 )
-
-
-# Skriv ut rådataene for begge tilfellene
-print(pend_00_22_ssb_boHland)
-print(pend_00_22_ssb_arbHland)
 ```
 
 Derretter lager vi vår egen reduserte versjon av datasettene hvor vi kunn ønsker å ta med: år, arbeidsstedskommune, bokommune og antall pendlere.
@@ -89,12 +86,14 @@ Dette gjelder for begge datasettene.
 **\--\> "*Vi bryr oss altså ikke om kommunenummer i det videre arbeidet og jobber bare med kommunenavn som kategorivariabler*"??**?
 
 ```{r}
+#| echo: FALSE
 Arbeid <- pend_00_22_ssb_arbHland |> 
   select(aar = år, arb_kom = arbeidsstedskommune, bo_kom = bostedskommune, pendlere = value) |> 
   as_tibble()
 ```
 
 ```{r}
+#| echo: FALSE
 Bosted <- pend_00_22_ssb_boHland |> 
   select(aar = år, bo_kom = bostedskommune, arb_kom = arbeidsstedskommune, pendlere = value) |> 
   as_tibble()
@@ -103,6 +102,7 @@ Bosted <- pend_00_22_ssb_boHland |>
 \--\> "***Vi må så konvertere `arb_kom` og `bo_kom` til kategorivariabler vha. `fct()` funksjonen. Hver av disse variablene skal så kollapses til kategoriene `Haugesund`, `Sauda`, `Bokn`, `Tysvær`, `Karmøy`, `Vindafjord` og `Ølen`. Vi gjør dette ved å bruke `fct_collapse()` funksjonen. Vi må også sørge for at hhv. `Ølen` og `Vindafjord` blir slått sammen til en kategori fra sine «gamle» versjoner. Vi samler kommunene utenfor Haugalandet i kategorien «Andre» vha. argumentet `other_level = "Andre"`. Overskriv `arb_kom` og `bo_kom` med sine kollapsede versjoner." ???***
 
 ```{r}
+#| echo: FALSE
 Arbeid <- Arbeid |> 
   mutate(
     arb_kom = fct(arb_kom),
@@ -136,9 +136,7 @@ Arbeid <- Arbeid |>
 ```
 
 ```{r}
-#plukke ut ett element
-x[[14]]
-=======
+#| echo: FALSE
 Bosted <- Bosted |> 
   mutate(
     bo_kom = fct(bo_kom),
@@ -172,6 +170,7 @@ Bosted <- Bosted |>
 ```
 
 ```{r}
+#| echo: FALSE
 # For Arbeid
 Arbeid <- Arbeid %>%
   filter(arb_kom %in% c("Haugesund", "Sveio", "Karmøy", "Bokn", "Tysvær", "Sauda", "Vindafjord", "Etne", "Andre")) %>%
@@ -180,6 +179,7 @@ Arbeid <- Arbeid %>%
 ```
 
 ```{r}
+#| echo: FALSE
 # For Bosted
 Bosted <- Bosted %>%
   filter(bo_kom %in% c("Haugesund", "Sveio", "Karmøy", "Bokn", "Tysvær", "Sauda", "Vindafjord", "Etne", "Andre")) %>%
@@ -188,11 +188,13 @@ Bosted <- Bosted %>%
 ```
 
 ```{r}
+#| echo: FALSE
 # Slå sammen datasettene med full_join
 pmat_long <- full_join(Bosted, Arbeid, by = c("aar", "bo_kom", "arb_kom"))
 ```
 
 ```{r}
+#| echo: FALSE
 pmat_long <- full_join(Bosted, Arbeid, by = c("aar", "bo_kom", "arb_kom")) %>%
   ungroup() %>%
   mutate(across(c("arb_kom", "bo_kom"), as.character))
@@ -200,6 +202,7 @@ pmat_long <- full_join(Bosted, Arbeid, by = c("aar", "bo_kom", "arb_kom")) %>%
 ```
 
 ```{r}
+#| echo: FALSE
 pmat_long <- pmat_long %>%
   mutate(pendlere = coalesce(pendlere.x, pendlere.y)) %>%
   filter(!is.na(pendlere) & pendlere != 0) %>%
@@ -207,6 +210,7 @@ pmat_long <- pmat_long %>%
 ```
 
 ```{r}
+#| echo: FALSE
 pmat_long <- pmat_long %>%
   group_by(aar, bo_kom) %>%
   mutate(bo_percent = (pendlere / sum(pendlere)) * 100) %>%
@@ -218,20 +222,21 @@ pmat_long <- pmat_long %>%
 ```
 
 ```{r}
+#| echo: FALSE
 print(pmat_long)
-print(pmat_long_temp)
-
 ```
 
 Rekkefølge kommune
 
 ```{r}
+#| echo: FALSE
 ordKom <- c("bo_kom" , "Haugesund", "Karmøy", "Tysvær", 
             "Sveio", "Bokn", "Vindafjord", "Sauda", 
             "Etne", "Andre")
 ```
 
 ```{r}
+#| echo: FALSE
 # Pendlermatrise for Haugalandet år 2000
 H2000 <- pmat_long |> 
   filter(aar == 2000) |> 
@@ -247,10 +252,8 @@ H2000 <- pmat_long |>
 ```
 
 ```{r}
+#| echo: FALSE
 # Gjøre pendlermatrisen litt finere
-```
-
-```{r}
 #| label: tbl-H2000
 #| tbl-cap: "Pendlematrise for Haugalandet år 2000."
 H2000 |> 
@@ -273,35 +276,37 @@ H2000 |>
 
 2.  Ingen observersjon = 0 stk.
 
-3.   Det er 0,081% som bodde i Karmøy kommune i 2000 og jobbet i Bokn kommune.
+3.  Det er 0,081% som bodde i Karmøy kommune i 2000 og jobbet i Bokn kommune.
 
-    ```{r}
-    antall_bodde_i_karmoy <- pmat_long %>%
-      filter(aar == "2000" & bo_kom == "Karmøy") %>%
-      summarise(totalt_antall = sum(pendlere))
-    print(antall_bodde_i_karmoy)
-    oppg.3 <- 14 / 17281 * 100
-    print(oppg.3)
+```{r}
+#| echo: FALSE
+antall_bodde_i_karmoy <- pmat_long %>%
+  filter(aar == "2000" & bo_kom == "Karmøy") %>%
+  summarise(totalt_antall = sum(pendlere))
+print(antall_bodde_i_karmoy)
+oppg.3 <- 14 / 17281 * 100
+print(oppg.3)
 
-    ```
-
-    4.  Det var 3,658% som bodde i Bokn kommune i 2000 jobbet i Karmøy kommune.
-
-    ```{r}
-    antall_bodde_i_bokn <- pmat_long %>%
-      filter(aar == "2000" & bo_kom == "Bokn") %>%
-      summarise(totalt_antall = sum(pendlere))
-    print(antall_bodde_i_bokn)
-    oppg.4 <- 15 / 410 * 100
-    print(oppg.4)
-    ```
-
-```{=html}
-<!-- -->
 ```
+
+4.  Det var 3,658% som bodde i Bokn kommune i 2000 jobbet i Karmøy kommune.
+
+```{r}
+#| echo: FALSE
+antall_bodde_i_bokn <- pmat_long %>%
+  filter(aar == "2000" & bo_kom == "Bokn") %>%
+  summarise(totalt_antall = sum(pendlere))
+print(antall_bodde_i_bokn)
+oppg.4 <- 15 / 410 * 100
+print(oppg.4)
+```
+
+<!-- -->
+
 5.  Det var 8,622% som jobbet i Sveio i 2000 bodde i Haugesund kommune.
 
     ```{r}
+    #| echo: FALSE
     antall_jobbet_i_Sveio <- pmat_long %>%
       filter(aar == "2000" & arb_kom == "Sveio") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -313,6 +318,7 @@ H2000 |>
 6.  Det er 1,688% som jobbet i Sveio i 2000 bodde i Tysvær kommune
 
     ```{r}
+    #| echo: FALSE
     oppg.6 <- 19 / 1125 * 100
     print(oppg.6)
     ```
@@ -320,6 +326,7 @@ H2000 |>
 7.  Det er 1,7% som jobbet i Haugesund i 2000 bodde i Vindafjord kommune
 
     ```{r}
+    #| echo: FALSE
     antall_jobbet_i_Hgsd <- pmat_long %>%
       filter(aar == "2000" & arb_kom == "Haugesund") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -331,6 +338,7 @@ H2000 |>
 ### **Spørsmål vedrørende pendle/andels-matrisene for 2012**
 
 ```{r}
+#| echo: FALSE
 # Pendlermatrise for Haugalandet år 2012
 H2012 <- pmat_long |> 
   filter(aar == 2012) |> 
@@ -345,6 +353,7 @@ H2012 <- pmat_long |>
 ```
 
 ```{r}
+#| echo: FALSE
 #| label: tbl-H2012
 #| tbl-cap: "Pendlematrise for Haugalandet år 2012."
 H2012 |> 
@@ -374,6 +383,7 @@ H2012 |>
 7.  Det var 4,749% som bodde i Sveio kommune i 2012 jobbet i Tysvær kommune
 
     ```{r}
+    #| echo: FALSE
     antall_bodde_i_sveio <- pmat_long %>%
       filter(aar == "2012" & bo_kom == "Sveio") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -385,6 +395,7 @@ H2012 |>
 8.  Det var 7,697% som bodde i Tysvær kommune i 2012 jobbet i Karmøy kommune
 
     ```{r}
+    #| echo: FALSE
     antall_bodde_i_tysvær <- pmat_long %>%
       filter(aar == "2012" & bo_kom == "Tysvær") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -396,6 +407,7 @@ H2012 |>
 9.  Det var 13.859% jobbet i Karmøy i 2012 bodde i Haugesund kommune
 
     ```{r}
+    #| echo: FALSE
     antall_jobbet_i_karmøy <- pmat_long %>%
       filter(aar == "2012" & arb_kom == "Karmøy") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -407,6 +419,7 @@ H2012 |>
 10. Det var 23,657% som jobbet i Haugesund i 2012 bodde i Karmøy kommune.
 
     ```{r}
+    #| echo: FALSE
     antall_jobbet_i_haugesund <- pmat_long %>%
       filter(aar == "2012" & arb_kom == "Haugesund") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -418,6 +431,7 @@ H2012 |>
 ### **Spørsmål vedrørende pendle/andels-matrisene for 2022**
 
 ```{r}
+#| echo: FALSE
 # Pendlermatrise for Haugalandet år 2022
 H2022 <- pmat_long |> 
   filter(aar == 2022) |> 
@@ -432,6 +446,7 @@ H2022 <- pmat_long |>
 ```
 
 ```{r}
+#| echo: FALSE
 #| label: tbl-H2022
 #| tbl-cap: "Pendlematrise for Haugalandet år 2022."
 H2022 |> 
@@ -461,6 +476,7 @@ H2022 |>
 7.  Det er 15,816% som jobbet i Karmøy i 2011 bodde i Haugesund kommune.
 
     ```{r}
+    #| echo: FALSE
     antall_jobbet_i_Kmøy <- pmat_long %>%
       filter(aar == "2022" & arb_kom == "Karmøy") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -472,6 +488,7 @@ H2022 |>
 8.  Det 23,245% som jobbet i Haugesund i 2011 bodde i Karmøy kommune.
 
     ```{r}
+    #| echo: FALSE
     antall_jobbet_i_H <- pmat_long %>%
       filter(aar == "2022" & arb_kom == "Haugesund") %>%
       summarise(totalt_antall = sum(pendlere))
@@ -480,8 +497,108 @@ H2022 |>
     print(oppg_8)
     ```
 
-## **Plots** 
+## **Plots**
 
 ```{r}
+#| echo: FALSE
+#| label: fig-boKarmoy
+#| fig-cap: "Arbeidssted for arbeidstakere som bor i Karmøy kommune, 2000-2022.Arbeidssted Karmøy er tatt vekk."
+# Karmøy utelatt
+pmat_long |> 
+  filter(bo_kom == "Karmøy" & !arb_kom == "Karmøy") |>
+  mutate(
+    år = ymd(str_c(aar, "01", "01")),
+    `Arb. prosent` = arb_percent,
+    `Arb. kom.` = fct(arb_kom, levels = ordKom[!ordKom %in% c("bo_kom", "Karmøy")])
+    ) |> 
+  ggplot(aes(x = år, 
+             y = `Arb. prosent`, 
+             color = `Arb. kom.`,
+             linetype = `Arb. kom.`,
+             group = `Arb. kom.`)
+         ) +
+  geom_line(linewidth = .8) +
+  scale_fill_discrete(ordKom[!ordKom %in% c("bo_kom", "Karmøy")]) +
+  theme(
+    legend.key.size = unit(2,"line"),
+    legend.position = "bottom"
+    )
+```
 
+```{r}
+#| echo: FALSE
+#| label: fig-boHaugesund
+#| fig-cap: "Arbeidssted for arbeidstakere som bor i Haugesund kommune, 2000-2022.Arbeidssted Haugesund er tatt vekk."
+# Haugesund utelatt
+pmat_long |> 
+  filter(bo_kom == "Haugesund" & !arb_kom == "Haugesund") |>
+  mutate(
+    år = ymd(str_c(aar, "01", "01")),
+    `Arb. prosent` = arb_percent,
+    `Arb. kom.` = fct(arb_kom, levels = ordKom[!ordKom %in% c("bo_kom", "Haugesund")])
+    ) |> 
+  ggplot(aes(x = år, 
+             y = `Arb. prosent`, 
+             color = `Arb. kom.`,
+             linetype = `Arb. kom.`,
+             group = `Arb. kom.`)
+         ) +
+  geom_line(linewidth = .8) +
+  scale_fill_discrete(ordKom[!ordKom %in% c("bo_kom", "Haugesund")]) +
+  theme(
+    legend.key.size = unit(2,"line"),
+    legend.position = "bottom"
+    )
+```
+
+```{r}
+#| echo: FALSE
+#| label: fig-boBokn
+#| fig-cap: "Arbeidssted for arbeidstakere som bor i Bokn kommune, 2000-2022.Arbeidssted Bokn er tatt vekk."
+# Bokn utelatt
+pmat_long |> 
+  filter(bo_kom == "Bokn" & !arb_kom == "Bokn") |>
+  mutate(
+    år = ymd(str_c(aar, "01", "01")),
+    `Arb. prosent` = arb_percent,
+    `Arb. kom.` = fct(arb_kom, levels = ordKom[!ordKom %in% c("bo_kom", "Bokn")])
+    ) |> 
+  ggplot(aes(x = år, 
+             y = `Arb. prosent`, 
+             color = `Arb. kom.`,
+             linetype = `Arb. kom.`,
+             group = `Arb. kom.`)
+         ) +
+  geom_line(linewidth = .8) +
+  scale_fill_discrete(ordKom[!ordKom %in% c("bo_kom", "Bokn")]) +
+  theme(
+    legend.key.size = unit(2,"line"),
+    legend.position = "bottom"
+    )
+```
+
+```{r}
+#| echo: FALSE
+#| label: fig-boKarmoyB
+#| fig-cap: "Arbeidssted for arbeidstakere som bor i Tysvær kommune, 2000-2022.Arbeidssted Tysvær er tatt vekk."
+#Tysvær utelatt
+pmat_long |> 
+  filter(bo_kom == "Tysvær" & !arb_kom == "Tysvær") |>
+  mutate(
+    år = ymd(str_c(aar, "01", "01")),
+    `Arb. prosent` = arb_percent,
+    `Arb. kom.` = fct(arb_kom, levels = ordKom[!ordKom %in% c("bo_kom", "Tysvær")])
+    ) |> 
+  ggplot(aes(x = år, 
+             y = `Arb. prosent`, 
+             color = `Arb. kom.`,
+             linetype = `Arb. kom.`,
+             group = `Arb. kom.`)
+         ) +
+  geom_line(linewidth = .8) +
+  scale_fill_discrete(ordKom[!ordKom %in% c("bo_kom", "Tysvær")]) +
+  theme(
+    legend.key.size = unit(2,"line"),
+    legend.position = "bottom"
+    )
 ```
