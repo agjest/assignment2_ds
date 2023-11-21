@@ -136,6 +136,10 @@ Arbeid <- Arbeid |>
 ```
 
 ```{r}
+<<<<<<< HEAD
+#plukke ut ett element
+x[[14]]
+=======
 Bosted <- Bosted |> 
   mutate(
     bo_kom = fct(bo_kom),
@@ -215,7 +219,12 @@ pmat_long <- pmat_long %>%
 ```
 
 ```{r}
+<<<<<<< HEAD
 print(pmat_long)
+=======
+print(pmat_long_temp)
+>>>>>>> a06fcd10db41a21857d2028fe2a49d5d171bcc7b
+>>>>>>> c4b6fc2a3cb1daa047da3d6946cd442fa267bc27
 ```
 
 Rekkefølge kommune
