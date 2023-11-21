@@ -140,3 +140,8 @@ Bosted1 <- Bosted |>
     )
   ) 
 ```
+
+```{r}
+#plukke ut ett element
+x[[14]]
+```
