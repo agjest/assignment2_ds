@@ -445,3 +445,43 @@ H2022 |>
   padding(padding.top = 1, padding.bottom = 2, part = "all") %>% 
   theme_booktabs()
 ```
+
+1.  657 stk.
+
+2.  769 stk.
+
+3.  45 stk.
+
+4.  24 stk.
+
+5.  2541 stk.
+
+6.  5190
+
+7.  Det er 15,816% som jobbet i Karmøy i 2011 bodde i Haugesund kommune.
+
+    ```{r}
+    antall_jobbet_i_Kmøy <- pmat_long %>%
+      filter(aar == "2022" & arb_kom == "Karmøy") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_jobbet_i_Kmøy)
+    oppg_7 <- 2541 / 16066 * 100
+    print(oppg_7)
+    ```
+
+8.  Det 23,245% som jobbet i Haugesund i 2011 bodde i Karmøy kommune.
+
+    ```{r}
+    antall_jobbet_i_H <- pmat_long %>%
+      filter(aar == "2022" & arb_kom == "Haugesund") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_jobbet_i_H)
+    oppg_8 <- 5190 / 22327 * 100
+    print(oppg_8)
+    ```
+
+## **Plots** 
+
+```{r}
+
+```
