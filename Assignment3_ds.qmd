@@ -281,7 +281,7 @@ H2000 |>
       summarise(totalt_antall = sum(pendlere))
     print(antall_bodde_i_karmoy)
     oppg.3 <- 14 / 17281 * 100
-    print(andel)
+    print(oppg.3)
 
     ```
 
@@ -348,6 +348,93 @@ H2012 <- pmat_long |>
 #| label: tbl-H2012
 #| tbl-cap: "Pendlematrise for Haugalandet år 2012."
 H2012 |> 
+  flextable() |> 
+  fit_to_width(max_width = 6.268, inc = 1L, max_iter = 20, unit = "in") |> 
+  line_spacing(space = 0,
+              part = "body"
+              ) %>% 
+  hrule(rule = "exact")  %>% 
+  height_all(height = 5, part = "all", unit = "mm") |> 
+  padding(padding.top = 1, padding.bottom = 2, part = "all") %>% 
+  theme_booktabs()
+```
+
+1.  421 stk.
+
+2.  569 stk.
+
+3.  11 stk.
+
+4.  30 stk.
+
+5.  2077 stk.
+
+6.  5207 stk.
+
+7.  Det var 4,749% som bodde i Sveio kommune i 2012 jobbet i Tysvær kommune
+
+    ```{r}
+    antall_bodde_i_sveio <- pmat_long %>%
+      filter(aar == "2012" & bo_kom == "Sveio") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_bodde_i_sveio)
+    oppg.7 <- 131 / 2758 * 100
+    print(oppg.7)
+    ```
+
+8.  Det var 7,697% som bodde i Tysvær kommune i 2012 jobbet i Karmøy kommune
+
+    ```{r}
+    antall_bodde_i_tysvær <- pmat_long %>%
+      filter(aar == "2012" & bo_kom == "Tysvær") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_bodde_i_tysvær)
+    oppg.8 <- 421 / 5469 * 100
+    print(oppg.8)
+    ```
+
+9.  Det var 13.859% jobbet i Karmøy i 2012 bodde i Haugesund kommune
+
+    ```{r}
+    antall_jobbet_i_karmøy <- pmat_long %>%
+      filter(aar == "2012" & arb_kom == "Karmøy") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_jobbet_i_karmøy)
+    oppg.9 <- 2077 / 14986 * 100
+    print(oppg.9)
+    ```
+
+10. Det var 23,657% som jobbet i Haugesund i 2012 bodde i Karmøy kommune.
+
+    ```{r}
+    antall_jobbet_i_haugesund <- pmat_long %>%
+      filter(aar == "2012" & arb_kom == "Haugesund") %>%
+      summarise(totalt_antall = sum(pendlere))
+    print(antall_jobbet_i_haugesund)
+    oppg.10 <- 5201 / 21985 * 100
+    print(oppg.10)
+    ```
+
+### **Spørsmål vedrørende pendle/andels-matrisene for 2022**
+
+```{r}
+# Pendlermatrise for Haugalandet år 2022
+H2022 <- pmat_long |> 
+  filter(aar == 2022) |> 
+  select(bo_kom, arb_kom, pendlere) |> 
+  pivot_wider(
+    names_from = arb_kom,
+    values_from = pendlere
+  ) |> 
+  arrange(fct(bo_kom, levels = ordKom[-1])) |> 
+  select(all_of(ordKom)) |> 
+  rename(`Bo kom - Arb kom` = bo_kom)
+```
+
+```{r}
+#| label: tbl-H2022
+#| tbl-cap: "Pendlematrise for Haugalandet år 2022."
+H2022 |> 
   flextable() |> 
   fit_to_width(max_width = 6.268, inc = 1L, max_iter = 20, unit = "in") |> 
   line_spacing(space = 0,
