@@ -619,7 +619,7 @@ Tysvær har derrimot nedgang fra år 2013.
 Bokn hadde en brå økning fra ca år 2014, men gikk fort ned igjen etter ca.
 2016.
 
-## Oppsummering/Konklusjon: 
+## Oppsummering/Konklusjon:
 
 Det ser ikke ut som om at T-forbindelsen som åpnet i 2013 har hatt noe stor innvikning på pendlemønsteret mellom kommunene på Haugalandet.
 Man skulle tro at de kommunene som skulle ha noe positiv innvivirkning av T-sambandet var Haugesund, Karmøy og Tysvær, men det viste seg at disse gjerne hadde negativ innvirkning ut i fra plottene våres.
