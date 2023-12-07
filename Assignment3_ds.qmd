@@ -599,7 +599,6 @@ pmat_long |>
 Kommentar fra Plottene ang.
 det såkalte T-sambandet som åpnet i 2013.
 T-sambandet er et veiprosjekt for å knytte Haugesund-regionen bedre sammen.
-Ny veiforbindelse mellom kommunene Haugesund, Karmøy og Tysvær er lagt til grunn som hovedmål:
 
 @fig-boKarmoy : Det er Lite effekt på pendlermønsteret fra de som bor i karmøy i 2013.
 Bokn har en svak nedgang fra år 2013 frem til år 2016 ca.
@@ -617,11 +616,11 @@ Tysvær har derrimot nedgang fra år 2013.
 
 @fig-boTysvær : For de som bor i Tysvær kommune i 2013 er det Karmøy som har en svak gradvis økning.
 Bokn hadde en brå økning fra ca år 2014, men gikk fort ned igjen etter ca.
-2016.
+år 2016.
 
 ## Oppsummering/Konklusjon:
 
 Det ser ikke ut som om at T-forbindelsen som åpnet i 2013 har hatt noe stor innvikning på pendlemønsteret mellom kommunene på Haugalandet.
-Man skulle tro at de kommunene som skulle ha noe positiv innvivirkning av T-sambandet var Haugesund, Karmøy og Tysvær, men det viste seg at disse gjerne hadde negativ innvirkning ut i fra plottene våres.
+Man skulle tro at de kommunene som skulle ha noe positiv innvivirkning av T-sambandet var Haugesund, Karmøy, Tysvær og Bokn, men det viste seg at disse gjerne hadde negativ innvirkning ut i fra plottene våres.
 Dette kommer nok av andre/tilfeldige observersjoner/grunner.
 Vi kan derfor konkludere med at det ikke er noen effekt på pendlemønsteret mellom de fire kommunene fra dette prosjektet (T-sambandet).
