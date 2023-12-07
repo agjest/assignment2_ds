@@ -1,0 +1,866 @@
+---
+title: "Assignment4_ds"
+format: html
+editor: visual
+author: Emilie og Ingrid
+---
+
+```{r}
+#| echo: fenced
+#| label: setup
+#| message: false
+library(tidyverse)
+library(readxl)
+library(restatapi)
+library(DescTools)
+library(ggrepel)
+library(flextable)
+library(modelr)
+library(plm)
+library(broom)
+library(sandwich)
+library(stringr)
+library(dplyr)
+```
+
+## **Assignment 4 2023 msb105**
+
+**Toc. eurostat**
+
+```{r}
+toc_txt <- get_eurostat_toc(mode = "txt")
+```
+
+**GDP NUTS 3**
+
+```{r}
+gdp_tabs <- toc_txt |> 
+# Regex AND external to regex
+   filter(
+     str_detect(
+       string = title,
+       # For å matche både små og store bokstaver
+       pattern = '[Gg][Dd][Pp]'
+       # AND vha. &
+       ) &
+     str_detect(
+       string = title,
+       # For å matche både små og store bokstaver og
+       # space eller ikke før 3
+       pattern = '[Nn][Uu][Tt][Ss]\\s*3'
+       )
+     ) |> 
+  select(title, code)
+```
+
+```{r}
+#| label: tbl-gdp-nuts3
+#| tbl-cap: "GDP på NUTS 3 nivå."
+gdp_tabs |> 
+  select(title, code) |> 
+  flextable()  |> 
+  width(1, width = 3.5) |> 
+  width(2, width = 1.5)
+```
+
+Vi laster så ned «Data Structure Definition (DSD)» for tabellen med code \`nama_10r_3gdp\`.
+
+```{r}
+dsd_gdp <- get_eurostat_dsd("nama_10r_3gdp")
+```
+
+```{r}
+dsd_gdp |> 
+  head(n = 15) |> 
+  flextable()  |> 
+  width(1, width = 1) |> 
+  width(2, width = 1) |> 
+  width(3, width = 3.5)
+```
+
+```{r}
+#| cache: true
+# Gross domestic product (GDP) at current market prices by NUTS 3 regions 
+# id: nama_10r_3gdp
+nama_10r_3gdp <- get_eurostat_data(
+  id = "nama_10r_3gdp",
+  filters = list(
+    geo = c("AT", "DE", "DK", "FR", "EL", "ES", 
+            "IT", "NL", "BE", "IE", "PL", "PT", "NO", "SE", "FI", "CH"),
+    nuts_level = "3",
+    unit = "MIO_PPS_EU27_2020"
+  ),
+  exact_match = FALSE,
+  date_filter = 2000:2020,
+  stringsAsFactors = FALSE
+  ) |> 
+  mutate(
+    gdp = 1000000 * values
+  ) |> 
+  select(-c(unit, values)) |> 
+  # Vil bare ha NUTS 3 nivå (5 karakterer). Vil aggregere selv til NUTS2,
+  # NUTS1 og NUTSc  
+  filter(str_length(geo) == 5)
+```
+
+## **Population demo_r_pjanaggr3**
+
+Oppgave 1
+
+```{r}
+result <- toc_txt |> 
+  filter(str_detect(title, '[Pp]opulation*') &
+         str_detect(title, '[Nn][Uu][Tt][Ss]\\s*3')) |> 
+  select(title, code)
+
+flextable(result) |> 
+  width(j = 1, width = 3.5) |> 
+  width(j = 2, width = 1.5)
+```
+
+Oppgave 2
+
+```{r}
+countries <- c("AT", "DE", "DK", "FR", "EL", "ES", "IT", "NL", "BE", 
+               "IE", "PL", "PT", "NO", "SE", "FI", "CH")
+
+# NUTS 3, nama_10r_3popgdp
+DSD_population1 <- get_eurostat_dsd("nama_10r_3popgdp")
+
+#| cache: true
+# Gjennomsnittlig årlig befolkning, beregning av reginale BNP (i 1000) 
+nama_10r_3popgdp <- get_eurostat_data(
+  id = "nama_10r_3popgdp",
+  filters = list(
+    geo = countries,
+    nuts_level = "3",
+    unit = "THS"
+  ),
+  exact_match = FALSE,
+  date_filter = 2000:2020,
+  stringsAsFactors = FALSE
+) %>%
+  mutate(pop = 1000 * values) |> 
+  select(-c(unit, values)) |> 
+  filter(str_length(geo) == 5)
+
+print(countries)
+```
+
+Oppgave 3
+
+(Henter befolkningsdata fra "Population on 1 January by broad age group, sex and NUTS 3 region».
+
+```{r}
+# NUTS 3, demo_r_pjanaggr3
+DSD_population2 <- get_eurostat_dsd("demo_r_pjanaggr3")
+
+#| cache: true
+# Befolkning 1. januar etter alder, kjønn og NUTS 3-region
+# demo_r_pjanaggr3
+demo_r_pjanaggr3 <- get_eurostat_data(
+  id = "demo_r_pjanaggr3",
+  filters = list(
+    geo = c("AT", "DE", "DK", "FR", "EL", "ES", "IT", 
+            "NL", "BE", "IE", "PL", "PT", "NO", "SE", "FI", "CH"),
+    nuts_level = "3",
+    sex = "T",
+    age = "Total",
+    unit = "NR"
+  ),
+  exact_match = FALSE,
+  date_filter = 2000:2020
+) |> 
+  filter(str_length(geo) == 5)
+```
+
+Oppgave 4
+
+```{r}
+setdiff(nama_10r_3popgdp$geo, demo_r_pjanaggr3$geo)
+```
+
+Oppgave 5
+
+```{r}
+setdiff(demo_r_pjanaggr3$geo, nama_10r_3popgdp$geo)
+```
+
+Oppgave 6
+
+```{r}
+full_pop_nuts3 <- demo_r_pjanaggr3 |> 
+  filter(sex == "T" & age == "TOTAL") |> 
+  select(geo, time, pop = values) |> 
+  full_join(
+    y = nama_10r_3popgdp,
+    by = c("geo", "time")
+  )
+
+```
+
+Oppgave 7
+
+```{r}
+setdiff(full_pop_nuts3$geo, nama_10r_3gdp$geo)
+```
+
+Oppgave 8
+
+```{r}
+setdiff(nama_10r_3gdp$geo, full_pop_nuts3$geo)
+```
+
+Oppgave 9
+
+```{r}
+nama_10r_3gdp <- nama_10r_3gdp |> 
+  filter(!geo %in% setdiff(nama_10r_3gdp$geo, full_pop_nuts3$geo))
+```
+
+```{r}
+full_pop_nuts3 |> 
+  filter(geo %in% c("NO053", "NO060", "NO061") & time %in% 2014:2020) |> 
+  arrange(time, geo)
+```
+
+Oppgave 10
+
+```{r}
+full_pop_nuts3 <- full_pop_nuts3 |> 
+  mutate(
+    pop = ifelse(
+      test = is.na(pop.x) == TRUE, 
+      yes = pop.y, 
+      no = pop.x
+      )
+  ) |> 
+  select(-pop.x, -pop.y)
+```
+
+Oppgave 11
+
+```{r}
+pop0 <- full_pop_nuts3 |> 
+  filter(pop == 0) |> 
+  nrow()
+```
+
+```{r}
+# 0 --> NA
+full_pop_nuts3 <- full_pop_nuts3 |> 
+  mutate(
+    pop = ifelse(pop == 0, NA, pop)
+  )
+```
+
+Oppgave 12
+
+```{r}
+eu_data <- nama_10r_3gdp |> 
+  left_join(
+    y = full_pop_nuts3,
+    join_by("geo", "time")
+  )
+```
+
+```{r}
+dim(eu_data)
+```
+
+```{r}
+eu_data <- eu_data |> 
+  mutate(
+    country = str_sub(geo, start = 1L, end = 2L)
+  )
+```
+
+```{r}
+#| paged.print: false
+eu_data |> 
+  distinct(geo, .keep_all = TRUE) |> 
+  group_by(country) |> 
+  summarise(Antall = n(), .groups = "drop")
+```
+
+```{r}
+eu_data |> 
+  summary()
+```
+
+```{r}
+eu_data <- eu_data |> 
+  select(country, NUTS3 = geo, year = time, gdp, pop)
+```
+
+```{r}
+# Rydder opp
+# Sletter alle objekt utenom eu_data
+# don't use if you don't mean it
+rm(list = setdiff(ls(), "eu_data"))
+```
+
+\
+Oppgave 13
+
+```{r}
+#bergener GDP per capita
+eu_data <- eu_data |> 
+  mutate(
+    gdp_per_capita = round(gdp / pop, digits = 2)
+  )
+```
+
+```{r}
+#| paged.print: false
+eu_data |>
+  select(gdp_per_capita) |> 
+  summary()
+```
+
+Oppgave 14\
+
+```{r}
+eu_data <- eu_data |> 
+  mutate(
+    country_name = case_when(
+      country == "AT" ~ "Østerrike",
+      country == "BE" ~ "Belgia",
+      country == "DE" ~ "Tyskland",
+      country == "DK" ~ "Danmark",
+      country == "EL" ~ "Hellas",
+      country == "ES" ~ "Spania",
+      country == "FR" ~ "Frankrike",
+      country == "IE" ~ "Irland",
+      country == "IT" ~ "Italia",
+      country == "NL" ~ "Nederland",
+      country == "PL" ~ "Polen",
+      country == "PT" ~ "Portugal",
+      country == "NO" ~ "Norge",
+      country == "SE" ~ "Sverige",
+      country == "FI" ~ "Finland",
+      country == "CH" ~ "Sveits"
+    ),
+    .before = country
+  ) |> 
+  ungroup()
+```
+
+Oppgave 15
+
+```{r}
+eu_data <- eu_data |> 
+  mutate(
+    NUTS2 = str_sub(NUTS3, start = 1L, end = 4L),
+    NUTS1 = str_sub(NUTS3, start = 1L, end = 3L),
+    NUTSc = str_sub(NUTS3, start = 1L, end = 2L)
+  ) |> 
+  select(country_name, country, year, NUTS3, NUTS2, NUTS1, 
+         NUTSc, gdp, pop, gdp_per_capita)
+```
+
+Oppgave 16
+
+```{r}
+gini_NUTS2 <- eu_data |> 
+  group_by(NUTS2, country_name, country, year) |> 
+  summarise(
+    gini_nuts2 = Gini(
+      x = gdp_per_capita,
+      weights = pop,
+      na.rm = TRUE
+    ),
+    pop = sum(pop, na.rm = TRUE),
+    gdp = sum(gdp, na.rm = TRUE),
+    gdp_per_capita = gdp / pop,
+    num_nuts3 = n(),
+    .groups = "drop"
+    ) |> 
+  select(country_name, country, NUTS2, year, pop, gdp, 
+         gdp_per_capita, num_nuts3, gini_nuts2)
+```
+
+```{r}
+gini_NUTS2 |> 
+  summary() |> 
+  print(width = 80)
+```
+
+```{r}
+gini_NUTS2 |> 
+  select(-country_name) |> 
+  filter(gini_nuts2 < 0.001)
+```
+
+Oppgave 17
+
+```{r}
+#bergener Gini koeffisienter på NUTS 1 nivå
+gini_NUTS1 <- eu_data |> 
+  group_by(NUTS1, country_name, country, year) |> 
+  summarise(
+    gini_nuts1 = Gini(x = gdp_per_capita, weights = pop, na.rm = TRUE),
+    pop = sum(pop, na.rm = TRUE),
+    gdp = sum(gdp, na.rm = TRUE),
+    gdp_per_capita = gdp / pop,
+    num_nuts3 = n(),
+    .groups = "drop"
+  ) |> 
+  select(country_name, country, NUTS1, year, pop, gdp, gdp_per_capita, num_nuts3, gini_nuts1)
+
+```
+
+```{r}
+gini_NUTS1 |> 
+  summary() |> 
+  print(width = 80)
+```
+
+Oppgave 18
+
+```{r}
+#bergener Gini koeffisienter på nasjon nivå
+gini_NUTSc <- eu_data |> 
+  group_by(NUTSc, country_name, country, year) |> 
+  summarise(
+    gini_nutsc = Gini(x = gdp_per_capita, weights = pop, na.rm = TRUE),
+    pop = sum(pop, na.rm = TRUE),
+    gdp = sum(gdp, na.rm = TRUE),
+    gdp_per_capita = gdp / pop,
+    num_nuts3 = n(),
+    .groups = "drop"
+  ) |> 
+  select(country_name, country, NUTSc, year, pop, gdp, gdp_per_capita, num_nuts3, gini_nutsc)
+
+```
+
+```{r}
+gini_NUTSc |> 
+  summary() |> 
+  print(width = 80)
+```
+
+**Nestete datastruktur**
+
+Oppgave 19
+
+```{r}
+gini_NUTS2_nest <- gini_NUTS2 |> 
+  group_by(country_name, country) |> 
+  nest(.key = "NUTS2_data") |> 
+  ungroup()
+```
+
+Oppgave 20
+
+```{r}
+gini_NUTS1_nest <- gini_NUTS1 |> 
+  group_by(country_name, country) |> 
+  nest(.key = "NUTS1_data") |> 
+  ungroup()
+```
+
+Oppgave 21
+
+```{r}
+gini_NUTSc_nest <- gini_NUTSc |> 
+  group_by(country_name, country) |> 
+  nest(.key = "NUTSc_data") |> 
+  ungroup()
+```
+
+Oppgave 22
+
+```{r}
+eu_data_nested <- eu_data |> 
+  group_by(country_name, country) |> 
+  nest(.key = "NUTS3_data") |> 
+  ungroup() |> 
+  left_join(gini_NUTS2_nest, by = c("country_name", "country")) |> 
+  left_join(gini_NUTS1_nest, by = c("country_name", "country")) |> 
+  left_join(gini_NUTSc_nest, by = c("country_name", "country"))
+```
+
+```{r}
+rm(list = setdiff(ls(), c("eu_data", "eu_data_nested")))
+```
+
+**Resultat**
+
+```{r}
+print(eu_data_nested)
+```
+
+**Plots som viser utviklingen**
+
+Oppgave 23
+
+```{r}
+#| label: fig-gini-nasjon
+#| fig-cap: "Utviklingen av Gini-koeffisienten over tid for 16 land."
+eu_data_nested %>%
+  unnest(NUTSc_data) %>%
+  mutate(year = make_date(year)) %>%
+  ggplot(mapping = aes(x = year, y = gini_nutsc, group = country_name, colour = country_name)) +
+    geom_line()
+
+```
+
+```{r}
+#| label: tbl-gini-land-2020
+#| tbl-cap: "Gini-koeffisient for gnp i 2020."
+eu_data_nested |> 
+  unnest(NUTSc_data) |> 
+  filter(year == 2020) |> 
+  select(country_name, gini_nutsc) |> 
+  arrange(desc(gini_nutsc)) |> 
+  flextable() |> 
+  width(1, width = 1.5) |> 
+  width(2, width = 1.5)
+```
+
+Oppgave 24
+
+```{r}
+#| label: tbl-gdppc-land-2020
+#| tbl-cap: "GDP per capita i 2020.
+eu_data_nested |> 
+  unnest(NUTSc_data) |> 
+  filter(year == 2020) |> 
+  select(country_name, gdp_per_capita) |> 
+  arrange(desc(gdp_per_capita)) |> 
+  flextable()  |> 
+  width(1, width = 1.5) |> 
+  width(2, width = 1.5)
+```
+
+Irland:
+
+```{r}
+#gini per capita i Irland NUTS 2
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Irland") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gini_nuts2)) +
+  geom_line(mapping = aes(group = NUTS2, colour = NUTS2))
+```
+
+```{r}
+#gdp per capita i Irland NUTS 2
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Irland") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gdp_per_capita)) +
+  geom_line(mapping = aes(group = NUTS2, colour = NUTS2))
+```
+
+Irland har ikke funnet ut hvordan man lager gull av torv
+
+**Hvordan er verdiskapningen fordelt mellom regionene i ulike land?**
+
+**Spania**
+
+Oppgave 25
+
+```{r}
+#line plot som viser utviklingen i gini til Spania, NUTS 2
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Spania") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gini_nuts2)) +
+  geom_line(mapping = aes(group = NUTS2, colour = NUTS2), na.rm = TRUE)
+```
+
+Oppgave 26
+
+```{r}
+#line plot som viser utviklingen i gini til Spania, NUTS 1
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS1_data) |> 
+  filter(country_name == "Spania") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gini_nuts1)) +
+  geom_line(mapping = aes(group = NUTS1, colour = NUTS1), na.rm = TRUE)
+```
+
+Oppgave 27
+
+Fordelingen er veldig variert i de ulike regionene i Spania som vi ser på tabellene.
+Det er både store variasjoner mellom regione innenfor NUTS 1 og NUTS 2 men også i hver enkelt region er det store forskjeller fra år til år.
+
+Oppgave 28
+
+```{r}
+#| label: fig-spania_gdppc_nuts2
+#| fig-cap: "Utviklingen i gnp_per_capita for NUTS2 regioner i Spania."
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Spania") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gdp_per_capita)) +
+  geom_line(mapping = aes(group = NUTS2, colour = NUTS2), na.rm = TRUE)
+```
+
+**Tyskland**
+
+Oppgave 29
+
+```{r}
+eu_data_nested %>%
+  unnest(NUTS2_data) %>%
+  filter(country_name == "Tyskland") %>%
+  mutate(year = make_date(year)) %>%
+  ggplot(mapping = aes(x = year, y = gini_nuts2, group = NUTS2, colour = NUTS2)) +
+    geom_line(na.rm = TRUE)
+```
+
+Oppgave 30
+
+```{r}
+#bruker NUTS 1
+#| eval: false
+eu_data_nested %>%
+  unnest(NUTS1_data) %>%
+  filter(country_name == "Tyskland") %>%
+  mutate(year = make_date(year)) %>%
+  ggplot(mapping = aes(x = year, y = gini_nuts1, group = NUTS1, colour = NUTS1)) +
+    geom_line(na.rm = TRUE)
+```
+
+Ginikoeffisientene for NUTS1 viser en differanse på omtrent 0,20 mellom det laveste og høyeste nivået i 2020.
+Denne samme differansen ser ut til å være tilstede også i år 2000.
+Selv om verdiene generelt er lavere i 2020, antyder det at det har vært en utjevning innenfor NUTS1-regionene.
+Imidlertid ser forskjellen mellom NUTS1-regionene ut til å være konstant gjennom denne perioden.
+
+**Frankrike**
+
+Oppgave 31
+
+```{r}
+#Frankrike, gini NUTS 2, linjeplott
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Frankrike") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gini_nuts2)) +
+  geom_line(mapping = aes(group = NUTS2, colour = NUTS2), na.rm = TRUE)
+```
+
+```{r}
+#| label: tbl-gini-frankrike-2020
+#| tbl-cap: "Gini-koeffisient for NUTS2 regioner i Frankrike 2020."
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Frankrike") |> 
+  filter(year == 2020) |> 
+  select(NUTS2, gini_nuts2) |> 
+  arrange(desc(gini_nuts2)) |> 
+  flextable()  |> 
+  width(1, width = 1.5) |> 
+  width(2, width = 1.5)
+```
+
+Oppgave 32
+
+```{r}
+##Frankrike, gini NUTS 1, linjeplott
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS1_data) |> 
+  filter(country_name == "Frankrike") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gini_nuts1)) +
+  geom_line(mapping = aes(group = NUTS1, colour = NUTS1), na.rm = TRUE)
+```
+
+Oppgave 33
+
+```{r}
+#Skjekker fr1
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  filter(country_name == "Frankrike") |> 
+  filter(str_sub(NUTS2, start = 1L, end = 3L) == "FR1") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gini_nuts2)) +
+  geom_line(mapping = aes(group = NUTS2, colour = NUTS2), na.rm = TRUE)
+```
+
+Oppgave 34
+
+```{r}
+#gdp per capita i fr1 NUTS 3
+#| eval: false
+eu_data_nested |> 
+  unnest(NUTS3_data) |> 
+  filter(country_name == "Frankrike") |> 
+  filter(str_sub(NUTS3, start = 1L, end = 3L) == "FR1") |> 
+  mutate(
+    year = make_date(year)
+  ) |> 
+  ggplot(mapping = aes(x = year, y = gdp_per_capita)) +
+  geom_line(mapping = aes(group = NUTS3, colour = NUTS3), na.rm = TRUE)
+```
+
+Oppgave 35
+
+Det ser ut til at vi har to distrikter som skiller seg tydelig ut fra de andre, og disse bidrar sannsynligvis til den høye Gini-koeffisienten.
+
+**Data Science modeller**
+
+Oppgave 36
+
+```{r}
+NUTS2_diff <- eu_data_nested |> 
+  unnest(NUTS2_data) |> 
+  mutate(
+    # Når vi tar diff får vi en obs. mindre. Legger derfor inn en NA først
+    # i vektoren
+    diff_gdp_per_capita = c(NA, diff(gdp_per_capita)),
+    diff_gini_nuts2 = c(NA, diff(gini_nuts2))
+    ) |> 
+  select(country_name, country, NUTS2, year, diff_gdp_per_capita, diff_gini_nuts2) %>% 
+  # Fjerner obs. der vi har NA
+  filter(complete.cases(.)) |> 
+  group_by(country_name, country, NUTS2) |> 
+  nest(.key = "NUTS2_diff")
+```
+
+Oppgave 37
+
+```{r}
+NUTS2_diff <- NUTS2_diff  |> 
+  group_by(country_name, country, NUTS2) |> 
+  mutate(
+    modell = map(
+      .x = NUTS2_diff,
+      .f = function(a_df) lm('diff_gini_nuts2 ~ diff_gdp_per_capita', data = a_df)
+    )
+  )
+```
+
+```{r}
+view(NUTS2_diff)
+```
+
+Oppgave 38
+
+```{r}
+NUTS2_diff <- NUTS2_diff  |> 
+  group_by(country_name, country, NUTS2) |> 
+  mutate(
+    mod_coeff = map_df(
+      .x = modell,
+      .f = coef
+      )
+    )
+```
+
+Oppgave 39
+
+```{r}
+NUTS2_diff <- NUTS2_diff  |> 
+  group_by(country_name, country, NUTS2) |> 
+  mutate(
+    mod_sum = map_df(
+      .x = modell,
+      .f = glance
+      )
+    )
+```
+
+Oppgave 40
+
+```{r}
+NUTS2_diff$mod_coeff |> 
+  ggplot() +
+  geom_density(mapping = aes(x = diff_gdp_per_capita), adjust = 0.6) +
+  geom_vline(mapping = aes(xintercept = mean(diff_gdp_per_capita, na.rm = TRUE)), 
+                           colour = "gray60",
+                           linetype = "dashed")
+```
+
+Oppgave 41
+
+```{r}
+tab1 <- table(NUTS2_diff$mod_coeff$diff_gdp_per_capita > 0)
+print(tab1)
+```
+
+Oppgave 42
+
+```{r}
+mean1 <- mean(NUTS2_diff$mod_coeff$diff_gdp_per_capita)
+print(mean1)
+```
+
+Oppgave 43
+
+```{r}
+ttest1 <- t.test(NUTS2_diff$mod_coeff$diff_gdp_per_capita, alternative = "greater")
+print(ttest1)
+```
+
+**Panel modell**
+
+Oppgave 44
+
+```{r}
+p_mod <- NUTS2_diff |> 
+  select(NUTS2, NUTS2_diff) |> 
+  unnest(NUTS2_diff) %>%
+  plm(
+    formula = 'diff_gini_nuts2 ~ diff_gdp_per_capita',
+    data = .,
+    index = c("NUTS2", "year")
+  )
+```
+
+Oppgave 45
+
+```{r}
+summary(p_mod)
+```
+
+Resultatene fra analysen antyder en betydningsfull sammenheng mellom endringer i \`diff_gdp_per_capita\` og \`diff_gini_nuts2\`.
+Den positive koeffisienten for \`diff_gdp_per_capita\` (3.0332e-06) indikerer at økninger i forskjellen mellom bruttonasjonalprodukt per innbygger (\`gdp_per_capita\`) er korrelert med økninger i Gini-koeffisienten for NUTS2-regionene (\`diff_gini_nuts2\`).
+
+Modellen viser seg signifikant, og p-verdien er svært liten, nesten null, for både F-statistikken og koeffisienten til \`diff_gdp_per_capita\`.
+Dette indikerer at modellen som helhet er statistisk betydningsfull, og at \`diff_gdp_per_capita\` er en signifikant prediktor for endringene i \`diff_gini_nuts2\`.
+
+R-kvadratverdiene relativt lave, noe som betyr at modellen forklarer en begrenset del av variasjonen i \`diff_gini_nuts2\`.
+Dette antyder at det kan være andre faktorer som påvirker Gini-koeffisienten som ikke er tatt med i analysen.
+
+Oppgave 46
+
+```{r}
+summary(p_mod, vcov = function(x) vcovHC(x, method = "white2"))
+```
+
+Takk for oss!
+God jul og godt nyttår!!!!!
