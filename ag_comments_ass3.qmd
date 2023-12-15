@@ -1,0 +1,43 @@
+---
+title: "ag comments assignment 3"
+format: 
+  html: default
+  pdf: default
+editor: visual
+---
+
+-   Dokumentet er reproduserbart.
+    Flott!
+
+-   Dere *burde* hatt et repo for hvert assignment.
+
+-   Argumentet .groups = "drop" er greit å bruke på summarise().
+    Dropper grupperingsstrukturen som forenkler tibble-en og vi slipper message om grouping
+
+-   Se litt endring på code for full_join() for å lage pmat_long.
+    Gjør ting litt enklere.
+
+-   Sjekk diverse \# ag_comment: for kommentarer til koden i de ulike chunk-ene
+
+-   echo: false ikke echo: FALSE i hash-pipe opsjoner
+
+-   bør ha 0 istedenfor ingenting i pmat_long for soner som ikke har pendling siden dette her har en konkret betydning.
+    F.eks: Det er 0 pendlere som bor på Bokn og jobber i Sveio i år 2000
+
+-   Ta en titt på hvordan en genererer tabell for andel arbeid gitt bosted og andel bosted gitt arbeidssted.
+    Dere har alt dataene i pmat_long.
+    Da kan svarene på spørsmålene leses rett ut av tabellene.
+
+-   Husk #\| echo: false for en moderne «hash pipe» opsjon.
+    Gamle-måten var echo = FALSE etter r i headeren til en chunk.
+
+-   Har fjernet mange echo: false slik at koden vises i dokumentet
+
+-   Har lagt inn en \pagebreak[4] som er latex kode for å oppmuntre til sideskift.
+    Medfører her at tabellene ikke blir brukket over sider.
+    Denne har bare innvirkning på pdf output (html er bare en lang scrollbar side)
+
+-   Se forslått endring i YAML header som gjør at dere kan slå av all visning av kode, f.eks aktuelt for endelig rapport.
+    Se Assignment3_ds_uten_kode.pdf for resultat.
+
+-   Dere begynner å bli ganske gode i R-koding ;-)

@@ -1,0 +1,15 @@
+---
+title: "ag commnets assignmnet 4"
+format: 
+  html: default
+  pdf: default
+editor: visual
+---
+
+-   Svar oppgave 24. Manglet et " i tbl-cap som ga en YAML feil
+-   Oppgavene 1 til 18, som om jeg skulle ha gjort det selv ;-)
+-   Oppgave 27. Jeg vil nok helle mer mot at fordelingen mellom de ulike regionene i Spania er nokså lik. gini mellom 0,02 og 0,11 er ikke så ille.
+-   Oppgave 28. Effekten vi ser til høyre er covid-19 som rammet Spania relativt kraftig økonomisk pga. fall i turist-næringen.
+-   Lagt til litt i YAML header slik at dere kan generere ulike format og slå av og på å vise kode.
+-   Da er både assignment 3 og 4 godkjent. For meg ser det ut som om dere har lært en anselig mengde Data Science iløpet av et kort høst-semester. Godt gjort!
+-   Ha en god jul og et flott nytt år.

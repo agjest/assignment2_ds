@@ -1,7 +1,12 @@
 ---
 title: "Assignment4_ds"
-format: html
+format: 
+  html: default
+  pdf:
+    toc: true
 editor: visual
+execute: 
+  echo: false
 author: Emilie og Ingrid
 ---
 
@@ -523,7 +528,7 @@ Oppgave 24
 
 ```{r}
 #| label: tbl-gdppc-land-2020
-#| tbl-cap: "GDP per capita i 2020.
+#| tbl-cap: "GDP per capita i 2020."
 eu_data_nested |> 
   unnest(NUTSc_data) |> 
   filter(year == 2020) |> 
